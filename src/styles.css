@@ -153,6 +153,34 @@ button, a {
   max-width: 640px;
 }
 
+.pf-home-layout {
+  width: min(1100px, 100%);
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 460px);
+  align-items: center;
+  gap: 36px;
+}
+
+.pf-home-copy {
+  max-width: 640px;
+}
+
+.pf-portrait-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 0 0;
+}
+
+.simulation-container {
+  display: block;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, rgba(42, 161, 152, 0.18), rgba(7, 54, 66, 0.9) 55%, rgba(0, 43, 54, 0.95));
+  box-shadow: 0 0 30px rgba(42, 161, 152, 0.18), inset 0 0 18px rgba(147, 161, 161, 0.12);
+  border: 1px solid rgba(88, 110, 117, 0.5);
+}
+
 .eyebrow {
   color: var(--yellow);
   font-size: 12px;

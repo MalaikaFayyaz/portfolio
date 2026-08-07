@@ -15,10 +15,29 @@ export default function App() {
   const [domain, setDomain] = useState(null);
   const eyesRef = useRef(null);
   const [eyesCenter, setEyesCenter] = useState({ x: 0, y: 0 });
+  const [worldX, setWorldX] = useState(0);
+  const worldXRef = useRef(0);
 
-  const totalWidth = vw * PAGES.length + vw * 2;
-  const nearPath = useMemo(() => buildHillPath(totalWidth, vh * 0.87, 1), [totalWidth, vh]);
-  const farPath = useMemo(() => buildHillPath(totalWidth * 0.9, vh * 0.8, 1.6), [totalWidth, vh]);
+  useEffect(() => {
+    let rafId;
+    let lastTime = null;
+
+    const tick = (time) => {
+      if (lastTime == null) lastTime = time;
+      const delta = Math.min(32, time - lastTime);
+      lastTime = time;
+      worldXRef.current += delta * 0.09;
+      setWorldX(worldXRef.current);
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const totalWidth = Math.max(vw * PAGES.length + vw * 2, worldX + vw * 4 + 2000);
+  const nearPath = useMemo(() => buildHillPath(totalWidth, vh * 0.85, 1), [totalWidth, vh]);
+  const farPath = useMemo(() => buildHillPath(totalWidth * 0.9, vh * 0.78, 1.6), [totalWidth, vh]);
 
   useEffect(() => {
     const el = eyesRef.current;
@@ -29,9 +48,9 @@ export default function App() {
   }, [vw, vh]);
 
   const carScreenX = vw * 0.32;
-  const carPathX = scrollX + carScreenX;
-  const baseline = vh * 0.62;
-  const carScreenY = baseline - hillY(carPathX) * 1 - 20;
+  const carPathX = worldX + carScreenX;
+  const groundBaseline = vh * 0.86;
+  const carScreenY = groundBaseline - hillY(carPathX) * 1 - 26;
   const slope = hillY(carPathX + 6) - hillY(carPathX - 6);
   const rotation = Math.max(-16, Math.min(16, slope * 2.2));
 
@@ -47,7 +66,7 @@ export default function App() {
   return (
     <div className="pf-root">
       <PortfolioNav activePage={activePage} goTo={goTo} />
-      <HillsBackground totalWidth={totalWidth} vh={vh} scrollX={scrollX} nearPath={nearPath} farPath={farPath} />
+      <HillsBackground totalWidth={totalWidth} vh={vh} scrollX={worldX} nearPath={nearPath} farPath={farPath} />
 
       <div style={{ position: "absolute", left: carScreenX - 43, top: carScreenY - 27, zIndex: 15 }}>
         <CarSVG rotation={rotation} />
@@ -59,8 +78,6 @@ export default function App() {
         <ExperienceSection />
         <ProjectsSection domain={domain} setDomain={setDomain} selectedDomain={selectedDomain} />
       </div>
-
-      {/* <div className="pf-hint">scroll (trackpad / wheel) →</div> */}
     </div>
   );
 }

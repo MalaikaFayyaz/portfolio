@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export function usePortfolioScroll() {
   const scrollRef = useRef(null);
-  const [vw, setVw] = useState(1200);
+  const [vw, setVw] = useState(1500);
   const [vh, setVh] = useState(700);
   const [scrollX, setScrollX] = useState(0);
   const [activePage, setActivePage] = useState(0);

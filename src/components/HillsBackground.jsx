@@ -10,3 +10,4 @@ export default function HillsBackground({ totalWidth, vh, scrollX, nearPath, far
     </div>
   );
 }
+
