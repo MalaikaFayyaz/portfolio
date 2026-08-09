@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { pixelData, colorForAlpha, BACKGROUND } from "../assets/asciiData.js";
+import { pixelData, colorForAlpha } from "../assets/asciiData.js";
 
 // Calculate bounds from pixelData
 const xs = pixelData.map((p) => p.x);
@@ -24,14 +24,18 @@ const calculateSize = (width) => {
 };
 
 // Build particles from pixelData
+// Tweak Y_SHIFT to move the portrait up (negative) or down (positive), in px at the rendered size.
+const Y_SHIFT = -40;
+
 const buildParticlesFromPixelData = (size) => {
   const scale = size / Math.max(contentWidth, contentHeight);
-  const padding = 16;
+  const paddingX = 16;
+  const paddingY = 16 + Y_SHIFT;
   const cellSize = Math.max(2, baseCell * scale);
   
   return pixelData.map(p => {
-    const x = (p.x - minX) * scale + padding;
-    const y = (p.y - minY) * scale + padding;
+    const x = (p.x - minX) * scale + paddingX;
+    const y = (p.y - minY) * scale + paddingY;
     return {
       x: Number(x.toFixed(1)),
       y: Number(y.toFixed(1)),
@@ -92,10 +96,11 @@ const AsciiPortrait = () => {
 
     const draw = () => {
       animationId = requestAnimationFrame(draw);
-      
-      // Fill background
-      ctx.fillStyle = BACKGROUND;
-      ctx.fillRect(0, 0, size, size);
+
+      // Clear instead of filling with a solid color — keeps the canvas
+      // transparent so the panel's own background shows through and the
+      // portrait reads as part of the page, not a separate box.
+      ctx.clearRect(0, 0, size, size);
 
       if (!dataReady || !particlesRef.current.length) return;
 
