@@ -1,125 +1,52 @@
 import React, { useRef, useEffect, useState } from "react";
-import { asciiData } from "../assets/asciiData";
+import { pixelData, colorForAlpha, BACKGROUND } from "../assets/asciiData.js";
 
-const memoryCache = {};
+// Calculate bounds from pixelData
+const xs = pixelData.map((p) => p.x);
+const ys = pixelData.map((p) => p.y);
+const minX = Math.min(...xs);
+const maxX = Math.max(...xs);
+const minY = Math.min(...ys);
+const maxY = Math.max(...ys);
 
-const chars = " .:-=+*#%@".split("");
+const xsSorted = [...new Set(xs)].sort((a, b) => a - b);
+const spacing = xsSorted.length > 1 ? xsSorted[1] - xsSorted[0] : 4.9;
+const baseCell = Math.max(2, spacing * 0.82);
+
+const contentWidth = maxX - minX + spacing;
+const contentHeight = maxY - minY + spacing;
 
 const calculateSize = (width) => {
-  if (width <= 480) return Math.min(220, width - 40);
-  if (width <= 768) return Math.min(280, width - 60);
-  return 400;
+  let size = 380;
+  if (width <= 480) size = Math.min(280, width - 32);
+  else if (width <= 768) size = Math.min(340, width - 48);
+  return Math.max(200, size);
 };
 
-const createParticlesFromRaw = (rawParticles, isMobileSize) => {
-  const fontSize = isMobileSize ? 5 : 7;
-
-  return rawParticles.map((p) => ({
-    x: p.x + (Math.random() - 0.5) * 400,
-    y: p.y + (Math.random() - 0.5) * 400,
-    targetX: p.x,
-    targetY: p.y,
-    vx: 0,
-    vy: 0,
-    char: p.char,
-    fontSize,
-    baseAlpha: p.alpha,
-    currentAlpha: 0,
-    delay: Math.random() * 0.4,
-    shimmer: Math.random() * Math.PI * 2,
-  }));
-};
-
-const buildFallbackParticles = (size) => {
-  const particles = [];
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const headRX = size * 0.18;
-  const headRY = size * 0.24;
-  const torsoW = size * 0.26;
-  const torsoH = size * 0.18;
-
-  for (let y = 0; y < size; y += 6) {
-    for (let x = 0; x < size; x += 5.5) {
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const inHead = (dx * dx) / (headRX * headRX) + (dy * dy) / (headRY * headRY) <= 1;
-      const inTorso = Math.abs(dx) <= torsoW && Math.abs(y - (centerY + size * 0.18)) <= torsoH;
-
-      if (inHead || inTorso) {
-        const brightness = 0.35 + Math.random() * 0.6;
-        particles.push({
-          x: x,
-          y: y,
-          char: chars[Math.min(chars.length - 1, Math.max(0, Math.floor(brightness * (chars.length - 1))))],
-          alpha: Number((0.4 + brightness * 0.6).toFixed(2)),
-        });
-      }
-    }
-  }
-
-  return particles;
-};
-
-const processImage = (img, targetSize) => {
-  const canvasWidth = targetSize;
-  const canvasHeight = targetSize;
-  const offscreen = document.createElement("canvas");
-  const offCtx = offscreen.getContext("2d");
-
-  if (!offCtx) {
-    return buildFallbackParticles(targetSize);
-  }
-
-  offscreen.width = canvasWidth;
-  offscreen.height = canvasHeight;
-
-  const scale = 0.8;
-  const imgAspect = img.width / img.height;
-
-  let drawHeight = canvasHeight * scale;
-  let drawWidth = drawHeight * imgAspect;
-
-  if (drawWidth > canvasWidth * scale) {
-    drawWidth = canvasWidth * scale;
-    drawHeight = drawWidth / imgAspect;
-  }
-
-  const offsetX = (canvasWidth - drawWidth) / 2;
-  const offsetY = (canvasHeight - drawHeight) / 2;
-
-  offCtx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-  const imageData = offCtx.getImageData(0, 0, canvasWidth, canvasHeight);
-  const pixels = imageData.data;
-  const rawParticles = [];
-  const isMobileSize = targetSize <= 280;
-  const fontSize = isMobileSize ? 5 : 7;
-  const colGap = fontSize * 0.7;
-  const rowGap = fontSize * 1.1;
-
-  for (let y = 0; y < canvasHeight; y += rowGap) {
-    for (let x = 0; x < canvasWidth; x += colGap) {
-      const index = (Math.floor(y) * canvasWidth + Math.floor(x)) * 4;
-      const alpha = pixels[index + 3];
-
-      if (alpha > 128) {
-        const r = pixels[index];
-        const g = pixels[index + 1];
-        const b = pixels[index + 2];
-        const brightness = (r + g + b) / (3 * 255);
-        const charIndex = Math.floor(brightness * (chars.length - 1));
-
-        rawParticles.push({
-          x: Number(x.toFixed(1)),
-          y: Number(y.toFixed(1)),
-          char: chars[charIndex],
-          alpha: Number((0.4 + brightness * 0.6).toFixed(2)),
-        });
-      }
-    }
-  }
-
-  return rawParticles;
+// Build particles from pixelData
+const buildParticlesFromPixelData = (size) => {
+  const scale = size / Math.max(contentWidth, contentHeight);
+  const padding = 16;
+  const cellSize = Math.max(2, baseCell * scale);
+  
+  return pixelData.map(p => {
+    const x = (p.x - minX) * scale + padding;
+    const y = (p.y - minY) * scale + padding;
+    return {
+      x: Number(x.toFixed(1)),
+      y: Number(y.toFixed(1)),
+      targetX: x,
+      targetY: y,
+      alpha: p.alpha,
+      baseAlpha: p.alpha,
+      vx: 0,
+      vy: 0,
+      delay: Math.random() * 2,
+      shimmer: Math.random() * Math.PI * 2,
+      currentAlpha: 0,
+      cellSize: cellSize
+    };
+  });
 };
 
 const AsciiPortrait = () => {
@@ -141,43 +68,10 @@ const AsciiPortrait = () => {
   }, []);
 
   useEffect(() => {
-    const isMobileSize = size <= 280;
-
-    const fallback = () => {
-      particlesRef.current = createParticlesFromRaw(buildFallbackParticles(size), isMobileSize);
-      setDataReady(true);
-      startTimeRef.current = performance.now();
-    };
-
-    if (asciiData && asciiData[size]) {
-      particlesRef.current = createParticlesFromRaw(asciiData[size], isMobileSize);
-      setDataReady(true);
-      startTimeRef.current = performance.now();
-      return;
-    }
-
-    if (asciiData && memoryCache[size]) {
-      particlesRef.current = createParticlesFromRaw(memoryCache[size], isMobileSize);
-      setDataReady(true);
-      startTimeRef.current = performance.now();
-      return;
-    }
-
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = "/profile.svg";
-
-    img.onload = () => {
-      const raw = processImage(img, size);
-      memoryCache[size] = raw;
-      particlesRef.current = createParticlesFromRaw(raw, isMobileSize);
-      setDataReady(true);
-      startTimeRef.current = performance.now();
-    };
-
-    img.onerror = () => {
-      fallback();
-    };
+    // Build particles from pixelData
+    particlesRef.current = buildParticlesFromPixelData(size);
+    setDataReady(true);
+    startTimeRef.current = performance.now();
   }, [size]);
 
   useEffect(() => {
@@ -190,13 +84,18 @@ const AsciiPortrait = () => {
     const dpr = window.devicePixelRatio || 1;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
     ctx.scale(dpr, dpr);
 
     let animationId;
 
     const draw = () => {
       animationId = requestAnimationFrame(draw);
-      ctx.clearRect(0, 0, size, size);
+      
+      // Fill background
+      ctx.fillStyle = BACKGROUND;
+      ctx.fillRect(0, 0, size, size);
 
       if (!dataReady || !particlesRef.current.length) return;
 
@@ -208,12 +107,6 @@ const AsciiPortrait = () => {
       mouse.x += (mouseTarget.x - mouse.x) * 0.15;
       mouse.y += (mouseTarget.y - mouse.y) * 0.15;
 
-      const isMobileSize = size <= 280;
-      const fontSize = isMobileSize ? 5 : 7;
-      ctx.font = `${fontSize}px monospace`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
       particles.forEach((p) => {
         const particleTime = elapsed - p.delay;
         if (particleTime < 0) return;
@@ -222,7 +115,7 @@ const AsciiPortrait = () => {
         const easedFade = 1 - Math.pow(1 - fadeProgress, 2);
         const isActive = mouse.active || particleTime < 3.0;
         const shimmerVal = isActive ? Math.sin(elapsed * 2 + p.shimmer) * 0.1 : 0;
-        p.currentAlpha = Math.max(0, p.baseAlpha * easedFade + shimmerVal);
+        p.currentAlpha = Math.max(0, Math.min(1, p.baseAlpha * easedFade + shimmerVal));
 
         const moveProgress = Math.min(particleTime / 2.5, 1);
         const easedMove = 1 - Math.pow(1 - moveProgress, 3);
@@ -268,23 +161,35 @@ const AsciiPortrait = () => {
         p.x += p.vx;
         p.y += p.vy;
 
-        ctx.fillStyle = `rgba(100, 255, 218, ${p.currentAlpha})`;
-        ctx.fillText(p.char, p.x, p.y);
+        // Draw colored pixel instead of character
+        const alpha = Math.min(1, p.currentAlpha + 0.15);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = colorForAlpha(p.alpha);
+        
+        // Draw pixel square
+        const cell = Math.max(1.5, p.cellSize || 3);
+        ctx.fillRect(p.x - cell/2, p.y - cell/2, cell, cell);
       });
+      
+      ctx.globalAlpha = 1;
     };
 
     const handleMouseMove = (event) => {
       const rect = canvas.getBoundingClientRect();
-      mouseTargetRef.current.x = event.clientX - rect.left;
-      mouseTargetRef.current.y = event.clientY - rect.top;
+      const scaleX = size / rect.width;
+      const scaleY = size / rect.height;
+      mouseTargetRef.current.x = (event.clientX - rect.left) * scaleX;
+      mouseTargetRef.current.y = (event.clientY - rect.top) * scaleY;
       mouseRef.current.active = true;
     };
 
     const handleTouchMove = (event) => {
       const rect = canvas.getBoundingClientRect();
       const touch = event.touches[0];
-      mouseTargetRef.current.x = touch.clientX - rect.left;
-      mouseTargetRef.current.y = touch.clientY - rect.top;
+      const scaleX = size / rect.width;
+      const scaleY = size / rect.height;
+      mouseTargetRef.current.x = (touch.clientX - rect.left) * scaleX;
+      mouseTargetRef.current.y = (touch.clientY - rect.top) * scaleY;
       mouseRef.current.active = true;
       if (event.cancelable) event.preventDefault();
     };
@@ -314,12 +219,14 @@ const AsciiPortrait = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="simulation-container"
       style={{
         width: `${size}px`,
         height: `${size}px`,
         cursor: "crosshair",
         touchAction: "none",
+        display: "block",
+        borderRadius: "12px",
+        boxShadow: "0 0 30px rgba(100, 255, 218, 0.1)",
       }}
     />
   );
