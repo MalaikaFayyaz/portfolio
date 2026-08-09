@@ -17,7 +17,7 @@ const contentWidth = maxX - minX + spacing;
 const contentHeight = maxY - minY + spacing;
 
 const calculateSize = (width) => {
-  let size = 380;
+  let size = 200;
   if (width <= 480) size = Math.min(280, width - 32);
   else if (width <= 768) size = Math.min(340, width - 48);
   return Math.max(200, size);
@@ -224,9 +224,9 @@ const AsciiPortrait = () => {
         height: `${size}px`,
         cursor: "crosshair",
         touchAction: "none",
-        display: "block",
-        borderRadius: "12px",
-        boxShadow: "0 0 30px rgba(100, 255, 218, 0.1)",
+        // display: "block",
+        // borderRadius: "12px",
+        // boxShadow: "0 0 30px rgba(100, 255, 218, 0.1)",
       }}
     />
   );
