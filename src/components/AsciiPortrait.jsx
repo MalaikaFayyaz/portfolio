@@ -172,7 +172,7 @@ const AsciiPortrait = () => {
         ctx.fillStyle = colorForAlpha(p.alpha);
         
         // Draw pixel square
-        const cell = Math.max(1.5, p.cellSize || 3);
+        const cell = Math.max(1.8, p.cellSize || 3);
         ctx.fillRect(p.x - cell/2, p.y - cell/2, cell, cell);
       });
       
