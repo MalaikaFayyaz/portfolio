@@ -1,3 +1,8 @@
+// Terrain math — preserved from the original pixel-landscape prototype.
+// hillY() defines the height profile of the rolling hills; buildHillPath()
+// turns that profile into an SVG path so the terrain can be rendered as a
+// filled silhouette and scrolled beneath the car.
+
 export function hillY(x) {
   return (
     58 * Math.sin(x * 0.0011) +
@@ -10,8 +15,12 @@ export function buildHillPath(totalWidth, baseline, amp, step = 24) {
   let d = `M 0 ${baseline + 400}`;
   for (let x = 0; x <= totalWidth; x += step) {
     const y = baseline - hillY(x) * amp;
-    d += ` L ${x} ${y.toFixed(1)}`;
+    d += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
   }
-  d += ` L ${totalWidth} ${baseline + 400} Z`;
+  d += ` L ${totalWidth.toFixed(1)} ${baseline + 400} Z`;
   return d;
 }
+
+export const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+export const lerp = (a, b, t) => a + (b - a) * t;
