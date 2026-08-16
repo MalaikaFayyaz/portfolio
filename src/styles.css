@@ -318,12 +318,14 @@ p.pf-desc {
 
 .experience-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 0.82fr) minmax(420px, 1.18fr);
+  grid-template-columns: minmax(400px, 0.9fr) minmax(420px, 1.18fr);
   align-items: center;
-  gap: clamp(36px, 7vw, 88px);
+  gap: clamp(35px, 6vw, 74px);
 }
 
-.experience-detail-slot { min-height: 0; }
+.experience-list .pf-title { white-space: nowrap; }
+
+.experience-detail-slot { width: min(560px, 100); min-height: 0; }
 
 .experience-detail {
   overflow: hidden;
@@ -419,9 +421,10 @@ p.pf-desc {
   100% { transform: translateY(2000%); opacity: 0; }
 }
 
-@media (max-width: 840px) {
+@media (max-width: 1000px) {
   .experience-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .experience-detail-slot { width: min(640px, 100%); }
+  .experience-list .pf-title { white-space: normal; }
 }
 
 @media (max-width: 480px) {
@@ -502,7 +505,7 @@ p.pf-desc {
   animation: holo-panel-in 360ms ease-out both;
 }
 
-.project-carousel-inner { position: relative; z-index: 2; padding: clamp(20px, 3vw, 32px); }
+.project-carousel-inner { position: relative; z-index: 2; padding: clamp(20px, 3vw, 32px);}
 
 .project-carousel-heading {
   display: flex;

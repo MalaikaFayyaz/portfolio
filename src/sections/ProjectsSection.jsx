@@ -47,6 +47,8 @@ export default function ProjectsSection({ domain, setDomain }) {
     }
   };
 
+  
+
   return (
     <section className="pf-page">
       <div className="pf-content projects-content">
