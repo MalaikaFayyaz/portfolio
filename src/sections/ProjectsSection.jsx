@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { DOMAINS } from "../data";
 import { DOMAINS as PROJECT_DOMAINS } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
@@ -6,6 +6,7 @@ import { audioEngine } from "../assets/audio";
 
 export default function ProjectsSection({ domain, setDomain }) {
   const [index, setIndex] = useState(0);
+  const swipeRef = useRef(null);
   const currentDomain = useMemo(
     () => PROJECT_DOMAINS.find((item) => item.id === domain) ?? null,
     [domain]
@@ -24,6 +25,26 @@ export default function ProjectsSection({ domain, setDomain }) {
     setIndex((current) => (
       current + direction + currentDomain.projects.length
     ) % currentDomain.projects.length);
+  };
+
+  const closeCarousel = () => {
+    setDomain(null);
+    setIndex(0);
+  };
+
+  const beginSwipe = (event) => {
+    swipeRef.current = { x: event.clientX, y: event.clientY };
+  };
+
+  const endSwipe = (event) => {
+    const start = swipeRef.current;
+    swipeRef.current = null;
+    if (!start) return;
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    if (Math.abs(deltaY) > 42 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      step(deltaY < 0 ? 1 : -1);
+    }
   };
 
   return (
@@ -52,35 +73,44 @@ export default function ProjectsSection({ domain, setDomain }) {
 
           <div className="project-carousel-slot" aria-live="polite">
             {project && currentDomain && (
-              <HoloPanel key={`${currentDomain.id}-${project.id}`} className="project-carousel-panel">
-                <div id="project-carousel" className="project-carousel-inner">
-                  <div className="project-carousel-heading">
-                    <div>
-                      <p>{currentDomain.label} · {index + 1}/{currentDomain.projects.length}</p>
-                      <h2>{project.title}</h2>
-                      <span>{project.tagline}</span>
-                    </div>
-                    <strong>● PROJECT FILE</strong>
-                  </div>
+              <div
+                className="project-carousel"
+                data-no-drag
+                onPointerDown={beginSwipe}
+                onPointerUp={endSwipe}
+                onPointerCancel={() => { swipeRef.current = null; }}
+              >
+                {currentDomain.projects.length > 1 && (
+                  <button className="project-carousel-arrow" type="button" onClick={() => step(-1)} aria-label="Previous project" title="Previous project">⌃</button>
+                )}
 
-                  <p className="project-carousel-description">{project.description}</p>
-                  <div className="project-carousel-highlights">
-                    <h3>Highlights</h3>
-                    <ul>{project.highlights.map((highlight) => <li key={highlight}><span>✓</span>{highlight}</li>)}</ul>
+                <HoloPanel key={`${currentDomain.id}-${project.id}`} className="project-carousel-panel" onClose={closeCarousel}>
+                  <div id="project-carousel" className="project-carousel-inner">
+                    <div className="project-carousel-heading">
+                      <div>
+                        <p>{currentDomain.label} · {index + 1}/{currentDomain.projects.length}</p>
+                        <h2>{project.title}</h2>
+                        <span>{project.tagline}</span>
+                      </div>
+                      <strong>● PROJECT FILE</strong>
+                    </div>
+
+                    <p className="project-carousel-description">{project.description}</p>
+                    <div className="project-carousel-highlights">
+                      <h3>Highlights</h3>
+                      <ul>{project.highlights.map((highlight) => <li key={highlight}><span>✓</span>{highlight}</li>)}</ul>
+                    </div>
+                    <div className="project-carousel-stack">
+                      {project.stack.map((technology) => <span key={technology}>{technology}</span>)}
+                    </div>
+                    {project.link && <a href={project.link} target="_blank" rel="noreferrer">view project →</a>}
                   </div>
-                  <div className="project-carousel-stack">
-                    {project.stack.map((technology) => <span key={technology}>{technology}</span>)}
-                  </div>
-                  {project.link && <a href={project.link} target="_blank" rel="noreferrer">view project →</a>}
-                </div>
+                </HoloPanel>
 
                 {currentDomain.projects.length > 1 && (
-                  <div className="project-carousel-controls">
-                    <button type="button" data-no-drag onClick={() => step(-1)} aria-label="Previous project" title="Previous project">⌃</button>
-                    <button type="button" data-no-drag onClick={() => step(1)} aria-label="Next project" title="Next project">⌄</button>
-                  </div>
+                  <button className="project-carousel-arrow" type="button" onClick={() => step(1)} aria-label="Next project" title="Next project">⌄</button>
                 )}
-              </HoloPanel>
+              </div>
             )}
           </div>
         </div>
