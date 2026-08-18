@@ -5,6 +5,10 @@ import { clamp } from "../utils/terrain";
 const ACCEL = 2200;
 const MAX_SPEED = 760;
 const FRICTION = 3200;
+const CAR_HALF_WIDTH = 43;
+const CAR_START_RATIO = 0.32;
+const CAMERA_LEFT_RATIO = 0.22;
+const CAMERA_RIGHT_RATIO = 0.72;
 
 // Original horizontal scroll controller, extended with the later driving,
 // keyboard, touch-drag, and audio behavior. This keeps one source of truth.
@@ -15,6 +19,8 @@ export function usePortfolioScroll() {
   const [scrollX, setScrollX] = useState(0);
   const [activePage, setActivePage] = useState(0);
   const [isGameMode, setIsGameMode] = useState(false);
+  const [facingDirection, setFacingDirection] = useState(1);
+  const [carWorldX, setCarWorldX] = useState(0);
   const scrollRafRef = useRef(null);
   const driveRafRef = useRef(null);
   const velocityRef = useRef(0);
@@ -22,6 +28,7 @@ export function usePortfolioScroll() {
   const gameModeRef = useRef(false);
   const stillTimerRef = useRef(0);
   const dragRef = useRef(null);
+  const carWorldXRef = useRef(null);
   const isTouch = useMemo(
     () => typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
     []
@@ -33,6 +40,10 @@ export function usePortfolioScroll() {
       if (el) {
         setVw(el.clientWidth);
         setVh(el.clientHeight);
+        if (carWorldXRef.current == null) {
+          carWorldXRef.current = el.clientWidth * CAR_START_RATIO;
+          setCarWorldX(carWorldXRef.current);
+        }
       }
     };
     measure();
@@ -51,6 +62,18 @@ export function usePortfolioScroll() {
       if (!el) return;
       setScrollX(el.scrollLeft);
       setActivePage(Math.round(el.scrollLeft / Math.max(1, vw)));
+      // Wheel, touch, and navigation can move the camera without driving.
+      // Bring the car back into view only after it has left the viewport.
+      const carX = carWorldXRef.current;
+      if (carX != null && (carX < el.scrollLeft + CAR_HALF_WIDTH || carX > el.scrollLeft + el.clientWidth - CAR_HALF_WIDTH)) {
+        const visibleCarX = clamp(
+          el.scrollLeft + el.clientWidth * CAR_START_RATIO,
+          CAR_HALF_WIDTH,
+          Math.max(CAR_HALF_WIDTH, el.scrollWidth - CAR_HALF_WIDTH)
+        );
+        carWorldXRef.current = visibleCarX;
+        setCarWorldX(visibleCarX);
+      }
     });
   }, [vw]);
 
@@ -92,6 +115,7 @@ export function usePortfolioScroll() {
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         event.preventDefault();
         keysRef.current[event.key === "ArrowLeft" ? "left" : "right"] = true;
+        setFacingDirection(event.key === "ArrowRight" ? 1 : -1);
         if (!gameModeRef.current) {
           gameModeRef.current = true;
           setIsGameMode(true);
@@ -131,7 +155,9 @@ export function usePortfolioScroll() {
       last = now;
       if (el && !dragRef.current?.active) {
         const { left, right } = keysRef.current;
-        const direction = (left ? 1 : 0) - (right ? 1 : 0);
+        // Moving right advances through the portfolio; moving left returns
+        // toward the home page. The scroll bounds keep the car in the world.
+        const direction = (right ? 1 : 0) - (left ? 1 : 0);
         if (direction) {
           velocityRef.current = clamp(velocityRef.current + direction * ACCEL * dt, -MAX_SPEED, MAX_SPEED);
         } else {
@@ -139,7 +165,27 @@ export function usePortfolioScroll() {
           velocityRef.current = Math.sign(velocityRef.current) * magnitude;
         }
         if (velocityRef.current) {
-          el.scrollLeft = clamp(el.scrollLeft + velocityRef.current * dt, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+          const maxCarX = Math.max(CAR_HALF_WIDTH, el.scrollWidth - CAR_HALF_WIDTH);
+          const nextCarX = clamp(
+            (carWorldXRef.current ?? el.clientWidth * CAR_START_RATIO) + velocityRef.current * dt,
+            CAR_HALF_WIDTH,
+            maxCarX
+          );
+          carWorldXRef.current = nextCarX;
+          setCarWorldX(nextCarX);
+
+          const screenX = nextCarX - el.scrollLeft;
+          const leftCameraEdge = el.clientWidth * CAMERA_LEFT_RATIO;
+          const rightCameraEdge = el.clientWidth * CAMERA_RIGHT_RATIO;
+          if (screenX > rightCameraEdge) {
+            el.scrollLeft = clamp(nextCarX - rightCameraEdge, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+          } else if (screenX < leftCameraEdge) {
+            el.scrollLeft = clamp(nextCarX - leftCameraEdge, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+          }
+
+          if (nextCarX === CAR_HALF_WIDTH || nextCarX === maxCarX) {
+            velocityRef.current = 0;
+          }
         }
       }
       const moving = keysRef.current.left || keysRef.current.right || Math.abs(velocityRef.current) > 1.5;
@@ -193,7 +239,7 @@ export function usePortfolioScroll() {
   }, [goTo, vw]);
 
   return {
-    scrollRef, vw, vh, scrollX, activePage, onScroll, goTo, nudgePage, isTouch, isGameMode,
+    scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, isGameMode, facingDirection,
     bindDrag: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp },
   };
 }

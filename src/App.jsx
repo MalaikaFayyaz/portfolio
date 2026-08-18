@@ -11,7 +11,7 @@ import ExperienceSection from "./sections/ExperienceSection";
 import ProjectsSection from "./sections/ProjectsSection";
 
 export default function App() {
-  const { scrollRef, vw, vh, scrollX, activePage, onScroll, goTo, nudgePage, isTouch, bindDrag } = usePortfolioScroll();
+  const { scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, bindDrag, facingDirection } = usePortfolioScroll();
   const [domain, setDomain] = useState(null);
   const eyesRef = useRef(null);
   const [eyesCenter, setEyesCenter] = useState({ x: 0, y: 0 });
@@ -27,15 +27,17 @@ export default function App() {
     }
   }, [vw, vh]);
 
-  const carScreenX = vw * 0.32;
-  const carPathX = scrollX + carScreenX;
-  const groundBaseline = vh * 0.86;
-  const carScreenY = groundBaseline - hillY(carPathX) * 1 - 26;
+  const carScreenX = Math.max(43, Math.min(vw - 43, carWorldX - scrollX));
+  const carPathX = carWorldX;
+  // The near path is the road the car drives on. Place the bottom of each
+  // wheel directly on that curve rather than on a separate baseline.
+  const nearTerrainY = vh * 0.85 - hillY(carPathX);
+  const carTop = nearTerrainY - 48;
   const slope = hillY(carPathX + 6) - hillY(carPathX - 6);
   const rotation = Math.max(-16, Math.min(16, slope * 2.2));
 
   const eyeDX = carScreenX - eyesCenter.x;
-  const eyeDY = carScreenY - eyesCenter.y;
+  const eyeDY = carTop + 24 - eyesCenter.y;
   const eyeAngle = Math.atan2(eyeDY, eyeDX);
   const pupilR = 3.2;
   const px = Math.cos(eyeAngle) * pupilR;
@@ -46,8 +48,8 @@ export default function App() {
       <PortfolioNav activePage={activePage} goTo={goTo} />
       <HillsBackground totalWidth={totalWidth} vh={vh} scrollX={scrollX} nearPath={nearPath} farPath={farPath} />
 
-      <div style={{ position: "absolute", left: carScreenX - 43, top: carScreenY - 27, zIndex: 15 }}>
-        <CarSVG rotation={rotation} />
+      <div style={{ position: "absolute", left: carScreenX - 43, top: carTop, zIndex: 15, transform: `scaleX(${facingDirection})` }}>
+        <CarSVG rotation={rotation * facingDirection} />
       </div>
 
       <div className="pf-scroll" ref={scrollRef} onScroll={onScroll} {...bindDrag}>
