@@ -1,7 +1,9 @@
-export default function AboutSection() {
+import EyeTracker from "../components/EyeTracker";
+export default function AboutSection({ eyeRef, px, py }) {
   return (
     <section className="pf-page">
       <div className="pf-content">
+        <EyeTracker eyeRef={eyeRef} px={px} py={py} />
         <div className="eyebrow">About</div>
         <h1 className="pf-title">a bit more <span className="accent">context</span>.</h1>
         <p className="pf-desc">

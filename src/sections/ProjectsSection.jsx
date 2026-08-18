@@ -4,7 +4,7 @@ import { DOMAINS as PROJECT_DOMAINS } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
 import { audioEngine } from "../assets/audio";
 
-export default function ProjectsSection({ domain, setDomain }) {
+export default function ProjectsSection({domain, setDomain }) {
   const [index, setIndex] = useState(0);
   const swipeRef = useRef(null);
   const currentDomain = useMemo(
