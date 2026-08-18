@@ -2,7 +2,6 @@ import { useState } from "react";
 import { EXPERIENCES } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
 import { audioEngine } from "../assets/audio";
-import EyeTracker from "../components/EyeTracker";
 
 // Keep the original entries and their left-side copy intact. The new data is
 // only used to fill the detail panel for the corresponding selected item.
@@ -23,7 +22,7 @@ const EXPERIENCE_ITEMS = [
   },
 ];
 
-export default function ExperienceSection({ eyeRef, px, py }) {
+export default function ExperienceSection() {
   const [selectedId, setSelectedId] = useState(null);
   const selected = EXPERIENCE_ITEMS.find((item) => item.id === selectedId) ?? null;
 
@@ -37,7 +36,6 @@ export default function ExperienceSection({ eyeRef, px, py }) {
       <div className="pf-content experience-content">
         <div className="experience-layout">
           <div className="experience-list">
-            <EyeTracker eyeRef={eyeRef} px={px} py={py} />
             <div className="eyebrow">Experience</div>
             <h1 className="pf-title">where i've <span className="accent">worked</span>.</h1>
 

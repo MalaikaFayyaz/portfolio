@@ -54,8 +54,8 @@ export default function App() {
 
       <div className="pf-scroll" ref={scrollRef} onScroll={onScroll} {...bindDrag}>
         <HomeSection eyeRef={eyesRef} px={px} py={py} nudgePage={nudgePage} isTouch={isTouch} />
-        <AboutSection eyeRef={eyesRef} px={px} py={py} nudgePage={nudgePage} isTouch={isTouch} />
-        <ExperienceSection eyeRef={eyesRef} px={px} py={py} nudgePage={nudgePage} isTouch={isTouch} />
+        <AboutSection />
+        <ExperienceSection />
         <ProjectsSection domain={domain} setDomain={setDomain} />
       </div>
     </div>
