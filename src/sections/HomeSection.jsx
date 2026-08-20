@@ -7,12 +7,14 @@ export default function HomeSection({ eyeRef, px, py }) {
       <div className="pf-content pf-home-layout">
         <div className="pf-home-copy">
           <EyeTracker eyeRef={eyeRef} px={px} py={py} />
-          <div className="eyebrow">Software Engineer · Builder</div>
-          <h1 className="pf-title">hi, i'm <span className="accent">Malaika Fayyaz</span></h1>
+          <div className="eyebrow">PolyMath · Sloth</div>
+          <h1 className="pf-title">i'm <span className="accent">Malaika Fayyaz</span></h1>
           <p className="pf-desc">
-            I build things across software, AI, and hardware. This portfolio doubles as a
-            playground: the hills keep going as long as you keep scrolling, and so does the car.
+            You have entered a Nomad. 
+            {/* This portfolio doubles as a
+            playground: the hills keep going as long as you keep scrolling, and so does the car. */}
           </p>
+
         </div>
 
         <div className="pf-portrait-panel">

@@ -5,13 +5,12 @@ export default function AboutSection() {
         <div className="eyebrow">About</div>
         <h1 className="pf-title">a bit more <span className="accent">context</span>.</h1>
         <p className="pf-desc">
-          Replace this with your real bio — where you work, what you studied, what you
-          obsess over outside of work. Two to three short paragraphs read best here.
+          I am an artist. I love designing and being fastidious about them hence my love for computer architecture came pretty natural. I write at times as well.
         </p>
         <ul className="pf-list">
-          <li><span>&gt;</span> Based in [city]</li>
-          <li><span>&gt;</span> Currently building [thing]</li>
-          <li><span>&gt;</span> Into [hobby / interest]</li>
+          <li><span>&gt;</span> Based in Sol 3.</li>
+          <li><span>&gt;</span> Currently building Grandir.</li>
+          <li><span>&gt;</span> Into Writing</li>
         </ul>
       </div>
     </section>
