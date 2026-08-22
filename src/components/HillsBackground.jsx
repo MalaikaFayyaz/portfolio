@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { buildHillPath, nearHillY, farHillY, NEAR_PERIOD, FAR_PERIOD } from "../utils/terrain";
 
 const TILE_COPIES = 3;
-const FAR_SCROLL_FACTOR = 0.35;
+const FAR_SCROLL_FACTOR = 0.65;
 const FAR_IDLE_FACTOR = 0.55;
 
 // Keep the translation inside one tile period so the offset never grows

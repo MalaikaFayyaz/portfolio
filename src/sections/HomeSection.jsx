@@ -1,12 +1,13 @@
+import { memo } from "react";
 import EyeTracker from "../components/EyeTracker";
 import AsciiPortrait from "../components/AsciiPortrait";
 
-export default function HomeSection({ eyeRef, px, py }) {
+function HomeSection() {
   return (
     <section className="pf-page">
       <div className="pf-content pf-home-layout">
         <div className="pf-home-copy">
-          <EyeTracker eyeRef={eyeRef} px={px} py={py} />
+          <EyeTracker />
           <div className="eyebrow">PolyMath · Sloth</div>
           <h1 className="pf-title">i'm <span className="accent">Malaika Fayyaz</span></h1>
           <p className="pf-desc">
@@ -24,3 +25,5 @@ export default function HomeSection({ eyeRef, px, py }) {
     </section>
   );
 }
+
+export default memo(HomeSection);
