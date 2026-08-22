@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { EXPERIENCES } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
 import { audioEngine } from "../assets/audio";
@@ -22,7 +22,7 @@ const EXPERIENCE_ITEMS = [
   },
 ];
 
-export default function ExperienceSection() {
+function ExperienceSection() {
   const [selectedId, setSelectedId] = useState(null);
   const selected = EXPERIENCE_ITEMS.find((item) => item.id === selectedId) ?? null;
 
@@ -94,3 +94,5 @@ export default function ExperienceSection() {
     </section>
   );
 }
+
+export default memo(ExperienceSection);

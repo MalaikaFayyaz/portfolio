@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, memo } from "react";
 import { DOMAINS } from "../data";
 import { DOMAINS as PROJECT_DOMAINS } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
 import { audioEngine } from "../assets/audio";
 
-export default function ProjectsSection({ domain, setDomain }) {
+function ProjectsSection({ domain, setDomain }) {
   const [index, setIndex] = useState(0);
   const swipeRef = useRef(null);
   const currentDomain = useMemo(
@@ -120,3 +120,5 @@ export default function ProjectsSection({ domain, setDomain }) {
     </section>
   );
 }
+
+export default memo(ProjectsSection);

@@ -1,23 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CarSVG from "./components/CarSVG";
 import HillsBackground from "./components/HillsBackground";
 import PortfolioNav from "./components/PortfolioNav";
-import { PAGES } from "./data";
-import { buildHillPath, hillY } from "./utils/terrain";
 import { usePortfolioScroll } from "./hooks/usePortfolioScroll";
+import { hillY } from "./utils/terrain";
 import HomeSection from "./sections/HomeSection";
 import AboutSection from "./sections/AboutSection";
 import ExperienceSection from "./sections/ExperienceSection";
 import ProjectsSection from "./sections/ProjectsSection";
 
+const IDLE_SPEED = 46;
+
 export default function App() {
-  const { scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, bindDrag, facingDirection } = usePortfolioScroll();
+  const { scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, isGameMode, bindDrag, facingDirection } = usePortfolioScroll();
   const [domain, setDomain] = useState(null);
+  const [idlePhase, setIdlePhase] = useState(0);
   const eyesRef = useRef(null);
   const [eyesCenter, setEyesCenter] = useState({ x: 0, y: 0 });
-  const totalWidth = vw * (PAGES.length + 2) + 2000;
-  const nearPath = useMemo(() => buildHillPath(totalWidth, vh * 0.85, 1), [totalWidth, vh]);
-  const farPath = useMemo(() => buildHillPath(totalWidth * 0.9, vh * 0.78, 1.6), [totalWidth, vh]);
 
   useEffect(() => {
     const el = eyesRef.current;
@@ -27,13 +26,30 @@ export default function App() {
     }
   }, [vw, vh]);
 
+  // Ambient cruise: while nobody is driving, the world slides past the
+  // stationary car. Driving freezes the phase so the hills track the real
+  // scroll position instead, and it resumes on release.
+  useEffect(() => {
+    if (isGameMode) return undefined;
+    let raf;
+    let last = performance.now();
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      setIdlePhase((phase) => phase + IDLE_SPEED * dt);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [isGameMode]);
+
   const carScreenX = Math.max(43, Math.min(vw - 43, carWorldX - scrollX));
-  const carPathX = carWorldX;
-  // The near path is the road the car drives on. Place the bottom of each
-  // wheel directly on that curve rather than on a separate baseline.
-  const nearTerrainY = vh * 0.85 - hillY(carPathX);
+  // The near hill layer is drawn at -(scrollX + idlePhase), so the ground
+  // directly under the car corresponds to this terrain coordinate.
+  const groundX = carWorldX + idlePhase;
+  const nearTerrainY = vh * 0.85 - hillY(groundX);
   const carTop = nearTerrainY - 48;
-  const slope = hillY(carPathX + 6) - hillY(carPathX - 6);
+  const slope = hillY(groundX + 6) - hillY(groundX - 6);
   const rotation = Math.max(-16, Math.min(16, slope * 2.2));
 
   const eyeDX = carScreenX - eyesCenter.x;
@@ -46,7 +62,7 @@ export default function App() {
   return (
     <div className="pf-root">
       <PortfolioNav activePage={activePage} goTo={goTo} />
-      <HillsBackground totalWidth={totalWidth} vh={vh} scrollX={scrollX} nearPath={nearPath} farPath={farPath} />
+      <HillsBackground vh={vh} scrollX={scrollX} idlePhase={idlePhase} />
 
       <div style={{ position: "absolute", left: carScreenX - 43, top: carTop, zIndex: 15, transform: `scaleX(${facingDirection})` }}>
         <CarSVG rotation={rotation * facingDirection} />

@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { audioEngine } from "../assets/audio";
 import { clamp } from "../utils/terrain";
 
-const ACCEL = 2200;
-const MAX_SPEED = 760;
-const FRICTION = 3200;
+const ACCEL = 950;
+const MAX_SPEED = 430;
+const FRICTION = 1150;
 const CAR_HALF_WIDTH = 43;
 const CAR_START_RATIO = 0.32;
-const CAMERA_LEFT_RATIO = 0.22;
-const CAMERA_RIGHT_RATIO = 0.72;
+const CAMERA_LEFT_RATIO = 0.3;
+const CAMERA_RIGHT_RATIO = 0.58;
 
 // Original horizontal scroll controller, extended with the later driving,
 // keyboard, touch-drag, and audio behavior. This keeps one source of truth.

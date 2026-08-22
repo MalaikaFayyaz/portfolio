@@ -1,4 +1,6 @@
-export default function AboutSection() {
+import { memo } from "react";
+
+function AboutSection() {
   return (
     <section className="pf-page">
       <div className="pf-content">
@@ -16,3 +18,5 @@ export default function AboutSection() {
     </section>
   );
 }
+
+export default memo(AboutSection);

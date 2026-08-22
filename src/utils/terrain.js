@@ -1,23 +1,32 @@
-// Terrain math — preserved from the original pixel-landscape prototype.
-// hillY() defines the height profile of the rolling hills; buildHillPath()
-// turns that profile into an SVG path so the terrain can be rendered as a
-// filled silhouette and scrolled beneath the car.
+// Terrain math for the scrolling pixel-landscape.
+// Both hill profiles are exact integer-harmonic sums of a base wavelength,
+// so profile(x + PERIOD) === profile(x). That lets HillsBackground render
+// one period as a tile and translate it forever without any visible seam.
 
-export function hillY(x) {
-  return (
-    58 * Math.sin(x * 0.0011) +
-    26 * Math.sin(x * 0.0027 + 1.3) +
-    14 * Math.sin(x * 0.0006 + 0.6)
-  );
+export const NEAR_PERIOD = 8400;
+export const FAR_PERIOD = 6300;
+
+const TAU = Math.PI * 2;
+
+export function nearHillY(x) {
+  const w = (TAU * x) / NEAR_PERIOD;
+  return 54 * Math.sin(w) + 22 * Math.sin(2 * w + 0.9) + 10 * Math.sin(3 * w + 1.7);
 }
 
-export function buildHillPath(totalWidth, baseline, amp, step = 24) {
-  let d = `M 0 ${baseline + 400}`;
-  for (let x = 0; x <= totalWidth; x += step) {
-    const y = baseline - hillY(x) * amp;
-    d += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+export function farHillY(x) {
+  const w = (TAU * x) / FAR_PERIOD;
+  return 70 * Math.sin(w + 0.4) + 26 * Math.sin(2 * w + 2.1) + 12 * Math.sin(5 * w + 0.7);
+}
+
+// The road the car drives on is the near silhouette.
+export const hillY = nearHillY;
+
+export function buildHillPath(period, baseline, profile = nearHillY, step = 24) {
+  let d = `M 0 ${(baseline + 400).toFixed(1)}`;
+  for (let x = 0; x <= period; x += step) {
+    d += ` L ${x.toFixed(1)} ${(baseline - profile(x)).toFixed(1)}`;
   }
-  d += ` L ${totalWidth.toFixed(1)} ${baseline + 400} Z`;
+  d += ` L ${period.toFixed(1)} ${(baseline + 400).toFixed(1)} Z`;
   return d;
 }
 
