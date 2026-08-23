@@ -11,9 +11,9 @@ function HomeSection() {
           <div className="eyebrow">PolyMath · Sloth</div>
           <h1 className="pf-title">i'm <span className="accent">Malaika Fayyaz</span></h1>
           <p className="pf-desc">
-            You have entered a Nomad. 
-            {/* This portfolio doubles as a
-            playground: the hills keep going as long as you keep scrolling, and so does the car. */}
+            You have entered a Nomad. <br></br>
+            I am a scientist by day and an artist by night. Evenings are often passed in liminality. 
+            <br></br> Currently, I am occupied by researching about the cache replacement using RL and working on its constraints.
           </p>
 
         </div>
