@@ -356,6 +356,47 @@ p.pf-desc {
   margin-right: 10px;
 }
 
+.about-content {
+  width: 100%;
+  max-width: none;
+}
+
+.about-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 4vw, 10px);
+  align-items: start;
+  margin-top: 6px;
+}
+
+.about-columns > *:first-child {
+  width: 75%;
+  max-width: 75%;
+}
+
+.about-columns > *:nth-child(2) {
+  width: 45%;
+  max-width: 45%;
+}
+/* .about-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+  margin-top: 6px;
+} */
+
+.about-columns .pf-desc {
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .about-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
 .exp-item {
   display: block;
   width: 100%;
@@ -418,17 +459,56 @@ p.pf-desc {
   overflow: hidden;
   border: 1px solid rgba(42, 161, 152, 0.5);
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(7, 54, 66, 0.94), rgba(0, 43, 54, 0.9));
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), inset 0 1px rgba(147, 161, 161, 0.08);
+  background: linear-gradient(135deg, rgba(3, 60, 75, 0.94), rgba(8, 47, 56, 0.9));
+  box-shadow: 0 8px 40px rgba(42, 161, 152, 0.25), inset 0 0.5px rgba(2, 238, 238, 1);
   animation: holo-panel-in 360ms ease-out both;
+}
+
+@keyframes scanline-sweep {
+  0%   { top: -40px; }   /* Start hidden above */
+  100% { top: 100%; }    /* End at the bottom */
+}
+
+.holo-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.holo-panel-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(42, 161, 152, 0.22);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: holo-panel-flash 480ms ease-out forwards;
 }
 
 .holo-panel-scan {
   position: absolute;
-  z-index: 1;
+  left: 0;
+  right: 0;
+  top: -40px;
   height: 40px;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(to bottom, rgba(42, 161, 152, 0.48), transparent);
   animation: scanline-sweep 750ms ease-out forwards;
+}
+
+.holo-panel-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(0deg, #eee8d5 0px, #eee8d5 1px, transparent 1px, transparent 3px);
+}
+
+.holo-panel-body {
+  position: relative;
+  z-index: 2;
 }
 
 .holo-panel-close {
@@ -503,9 +583,14 @@ p.pf-desc {
 }
 
 @keyframes scanline-sweep {
-  0% { transform: translateY(-100%); opacity: 0; }
+  0% { top: -40px; opacity: 0; }
   10% { opacity: 0.72; }
-  100% { transform: translateY(2000%); opacity: 0; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes holo-panel-flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
 }
 
 @media (max-width: 1000px) {

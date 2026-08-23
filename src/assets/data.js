@@ -30,7 +30,8 @@ export const EXPERIENCES = [
     ],
     technologies: ["JavaScript", "SQL", "MongoDB", "Retool"],
     achievements: [
-      
+      "Built an automated appointment scheduler that sends email reminders by integrating Google Calendar, Gmail, and Classroom APIs",
+      "Designed and deployed a Retool workflow that streamlined internal business processes",
     ],
   },
   {
