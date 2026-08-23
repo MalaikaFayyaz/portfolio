@@ -23,8 +23,7 @@ export default function HillsBackground({ vh, scrollX, idlePhase }) {
           <path
             key={i}
             d={farTile}
-            fill="#2aa198"
-            opacity="0.10"
+            fill="#133942"
             transform={`translate(${(i * FAR_PERIOD - farOffset).toFixed(2)} 0)`}
           />
         ))}
@@ -34,8 +33,7 @@ export default function HillsBackground({ vh, scrollX, idlePhase }) {
           <path
             key={i}
             d={nearTile}
-            fill="#b58900"
-            opacity="0.14"
+            fill="#013536"
             transform={`translate(${(i * NEAR_PERIOD - nearOffset).toFixed(2)} 0)`}
           />
         ))}
