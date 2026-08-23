@@ -7,8 +7,8 @@ const MAX_SPEED = 430;
 const FRICTION = 1150;
 const CAR_HALF_WIDTH = 43;
 const CAR_START_RATIO = 0.32;
-const CAMERA_LEFT_RATIO = 0.3;
-const CAMERA_RIGHT_RATIO = 0.58;
+const CAMERA_LEFT_RATIO = 0.06;
+const CAMERA_RIGHT_RATIO = 0.94;
 
 // Original horizontal scroll controller, extended with the later driving,
 // keyboard, touch-drag, and audio behavior. This keeps one source of truth.
