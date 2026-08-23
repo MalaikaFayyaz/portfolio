@@ -29,6 +29,7 @@ export function usePortfolioScroll() {
   const stillTimerRef = useRef(0);
   const dragRef = useRef(null);
   const carWorldXRef = useRef(null);
+  const carScreenXRef = useRef(null);
   const isTouch = useMemo(
     () => typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
     []
@@ -42,6 +43,7 @@ export function usePortfolioScroll() {
         setVh(el.clientHeight);
         if (carWorldXRef.current == null) {
           carWorldXRef.current = el.clientWidth * CAR_START_RATIO;
+          carScreenXRef.current = el.clientWidth * CAR_START_RATIO;
           setCarWorldX(carWorldXRef.current);
         }
       }
@@ -62,17 +64,16 @@ export function usePortfolioScroll() {
       if (!el) return;
       setScrollX(el.scrollLeft);
       setActivePage(Math.round(el.scrollLeft / Math.max(1, vw)));
-      // Wheel, touch, and navigation can move the camera without driving.
-      // Bring the car back into view only after it has left the viewport.
-      const carX = carWorldXRef.current;
-      if (carX != null && (carX < el.scrollLeft + CAR_HALF_WIDTH || carX > el.scrollLeft + el.clientWidth - CAR_HALF_WIDTH)) {
-        const visibleCarX = clamp(
-          el.scrollLeft + el.clientWidth * CAR_START_RATIO,
-          CAR_HALF_WIDTH,
-          Math.max(CAR_HALF_WIDTH, el.scrollWidth - CAR_HALF_WIDTH)
-        );
-        carWorldXRef.current = visibleCarX;
-        setCarWorldX(visibleCarX);
+      // Wheel, touch, and navigation move the camera without driving. Keep
+      // the car glued to its current on-screen spot so it rides along with
+      // the scenery instead of being left behind in world space.
+      if (!gameModeRef.current && carWorldXRef.current != null) {
+        const screenX = carScreenXRef.current ?? el.clientWidth * CAR_START_RATIO;
+        const maxCarX = Math.max(CAR_HALF_WIDTH, el.scrollWidth - CAR_HALF_WIDTH);
+        const worldX = clamp(el.scrollLeft + screenX, CAR_HALF_WIDTH, maxCarX);
+        carWorldXRef.current = worldX;
+        carScreenXRef.current = worldX - el.scrollLeft;
+        setCarWorldX(worldX);
       }
     });
   }, [vw]);
@@ -182,6 +183,7 @@ export function usePortfolioScroll() {
           } else if (screenX < leftCameraEdge) {
             el.scrollLeft = clamp(nextCarX - leftCameraEdge, 0, Math.max(0, el.scrollWidth - el.clientWidth));
           }
+          carScreenXRef.current = nextCarX - el.scrollLeft;
 
           if (nextCarX === CAR_HALF_WIDTH || nextCarX === maxCarX) {
             velocityRef.current = 0;

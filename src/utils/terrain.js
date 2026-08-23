@@ -22,11 +22,17 @@ export function farHillY(x) {
 export const hillY = nearHillY;
 
 export function buildHillPath(period, baseline, profile = nearHillY, step = 24) {
-  let d = `M 0 ${(baseline + 400).toFixed(1)}`;
-  for (let x = 0; x <= period; x += step) {
+  // Extend the silhouette past both tile edges so adjacent copies overlap.
+  // Edge-to-edge tiling shows hairline seams once sub-pixel offsets land on
+  // fractional device pixels; a small overlap makes that impossible, and the
+  // periodic profile keeps the overlapping curves pixel-identical.
+  const start = -12;
+  const end = period + 12;
+  let d = `M ${start} ${(baseline + 400).toFixed(1)}`;
+  for (let x = start; x <= end; x += step) {
     d += ` L ${x.toFixed(1)} ${(baseline - profile(x)).toFixed(1)}`;
   }
-  d += ` L ${period.toFixed(1)} ${(baseline + 400).toFixed(1)} Z`;
+  d += ` L ${end.toFixed(1)} ${(baseline + 400).toFixed(1)} Z`;
   return d;
 }
 
