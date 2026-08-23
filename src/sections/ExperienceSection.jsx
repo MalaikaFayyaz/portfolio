@@ -8,15 +8,15 @@ import { audioEngine } from "../assets/audio";
 const EXPERIENCE_ITEMS = [
   {
     id: "software-engineer",
-    role: "Software Engineer — [Company]",
-    period: "2024 — present",
+    role: "Software Engineer Intern — MaqMinds",
+    period: "July 2025 – September 2025",
     summary: "One or two lines on scope and impact. Keep it concrete.",
     details: EXPERIENCES[0],
   },
   {
     id: "intern",
-    role: "Intern — [Company]",
-    period: "2023",
+    role: "Tech Head Assistant — Seed Programming",
+    period: "January 2024 – January 2025",
     summary: "Same format, same brevity. Numbers help if you have them.",
     details: EXPERIENCES[1],
   },

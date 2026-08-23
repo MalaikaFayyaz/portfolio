@@ -16,20 +16,21 @@ export const SOCIALS = [
 export const EXPERIENCES = [
   {
     id: "exp-1",
-    role: "Software Engineer",
-    org: "Nimbus Cloud Systems",
-    period: "2023 — Present",
-    location: "Remote",
-    summary: "Building resilient backend platforms and internal developer tooling.",
+    role: "Software Engineer Intern",
+    org: "MaqMinds",
+    period: "July 2025 – September 2025",
+    location: "Johar Town, Lahore.",
+    summary: "Building digital solutions and tech consulting to drive business growth and digital transformation.",
     description:
-      "Own core services for a multi-tenant SaaS platform, focusing on reliability, observability, and developer velocity. Partnered with product to ship features end-to-end, from schema design to rollout.",
-    responsibilities: [
-      "Designed and shipped REST/GraphQL APIs used by 40k+ daily active users",
-      "Led migration from monolith to modular services, cutting deploy time by 65%",
+      "Built internal tools and dashboards using Retool to automate business workflows and improve operational efficiency",
+    responsibilities: [      
+      "Integrated APIs and databases to streamline data flow between systems",
+      "Collaborated with engineers to design, test, and deploy production-ready features",
+      "Debugged issues, implemented feature enhancements, and improved UI usability based on stakeholder feedback",
     ],
-    technologies: ["TypeScript", "Node.js", "PostgreSQL", "Docker", "AWS", "React"],
+    technologies: ["JavaScript", "SQL", "MongoDB", "Retool"],
     achievements: [
-      "Shipped a real-time collaboration feature adopted by 80% of active teams",
+      
     ],
   },
   {
