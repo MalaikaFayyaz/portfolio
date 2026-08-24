@@ -378,6 +378,20 @@ p.pf-desc {
   width: 45%;
   max-width: 45%;
 }
+
+@media (max-width: 700px) {
+.about-columns > *:first-child {
+  width: 100%;
+  max-width: 100%;
+}
+
+.about-columns > *:nth-child(2) {
+  width: 100%;
+  max-width: 100%;
+}
+
+}
+
 /* .about-columns {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);

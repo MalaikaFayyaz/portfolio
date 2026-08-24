@@ -30,6 +30,7 @@ export function usePortfolioScroll() {
   const dragRef = useRef(null);
   const carWorldXRef = useRef(null);
   const carScreenXRef = useRef(null);
+  const hSwipeRef = useRef({ accumulated: 0, lastTime: 0, lockedUntil: 0 });
   const isTouch = useMemo(
     () => typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
     []
@@ -78,20 +79,6 @@ export function usePortfolioScroll() {
     });
   }, [vw]);
 
-  const onWheel = useCallback((event) => {
-    const el = scrollRef.current;
-    if (!el || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-    event.preventDefault();
-    el.scrollLeft += event.deltaY;
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return undefined;
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [onWheel]);
-
   const goTo = useCallback((idx) => {
     const el = scrollRef.current;
     if (!el) return;
@@ -104,6 +91,39 @@ export function usePortfolioScroll() {
     if (!el) return;
     goTo(Math.round(el.scrollLeft / Math.max(1, vw)) + delta);
   }, [goTo, vw]);
+
+  const onWheel = useCallback((event) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Horizontal trackpad swipe: accumulate deltas and flip exactly one page
+    // per gesture, mirroring the up/down arrow behavior. The lockout window
+    // keeps the momentum tail from firing a second page immediately.
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      event.preventDefault();
+      const now = performance.now();
+      const state = hSwipeRef.current;
+      if (now < state.lockedUntil) return;
+      if (now - state.lastTime > 260) state.accumulated = 0;
+      state.lastTime = now;
+      state.accumulated += event.deltaX;
+      if (Math.abs(state.accumulated) >= 90) {
+        const direction = state.accumulated > 0 ? 1 : -1;
+        state.accumulated = 0;
+        state.lockedUntil = now + 450;
+        nudgePage(direction);
+      }
+      return;
+    }
+    event.preventDefault();
+    el.scrollLeft += event.deltaY;
+  }, [nudgePage]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return undefined;
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [onWheel]);
 
   useEffect(() => {
     if (isTouch) return undefined;
@@ -211,7 +231,8 @@ export function usePortfolioScroll() {
   const onPointerDown = useCallback((event) => {
     if (event.target.closest("[data-no-drag]")) return;
     dragRef.current = {
-      active: true, startX: event.clientX, startScroll: scrollRef.current?.scrollLeft ?? 0,
+      active: true, startX: event.clientX, startY: event.clientY,
+      startScroll: scrollRef.current?.scrollLeft ?? 0,
       lastX: event.clientX, lastTime: performance.now(), velocity: 0, axis: null,
     };
   }, []);
@@ -221,8 +242,19 @@ export function usePortfolioScroll() {
     const el = scrollRef.current;
     if (!drag?.active || !el) return;
     const dx = event.clientX - drag.startX;
-    if (!drag.axis && Math.abs(dx) > 8) drag.axis = "x";
-    if (drag.axis !== "x") return;
+    const dy = event.clientY - drag.startY;
+    // Lock onto whichever axis crosses the threshold first so one gesture
+    // only ever drives one direction.
+    if (!drag.axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+    }
+    if (!drag.axis) return;
+    if (drag.axis === "y") {
+      // Vertical drag pans the world horizontally with the same sign
+      // mapping as the desktop wheel: dragging down advances forward.
+      el.scrollLeft = clamp(drag.startScroll + dy, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+      return;
+    }
     el.scrollLeft = clamp(drag.startScroll - dx, 0, Math.max(0, el.scrollWidth - el.clientWidth));
     const now = performance.now();
     drag.velocity = ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) * 1000;
@@ -230,14 +262,22 @@ export function usePortfolioScroll() {
     drag.lastTime = now;
   }, []);
 
-  const onPointerUp = useCallback(() => {
+  const onPointerUp = useCallback((event) => {
     const drag = dragRef.current;
     const el = scrollRef.current;
     if (!drag?.active) return;
     drag.active = false;
-    if (drag.axis === "x" && el) {
-      goTo(Math.round(el.scrollLeft / Math.max(1, vw) + clamp(drag.velocity / 900, -1, 1) * 0.3));
-    }
+    if (drag.axis !== "x" || !el) return;
+    // A committed horizontal swipe always travels exactly one page from
+    // where the gesture started; a tiny nudge just settles back.
+    const dxTotal = event ? event.clientX - drag.startX : 0;
+    const maxPage = Math.max(0, Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw)));
+    const startPage = clamp(Math.round(drag.startScroll / Math.max(1, vw)), 0, maxPage);
+    const flung = Math.abs(dxTotal) > 55 || Math.abs(drag.velocity) > 320;
+    const targetPage = flung
+      ? clamp(startPage + (dxTotal < 0 ? 1 : -1), 0, maxPage)
+      : clamp(Math.round(el.scrollLeft / Math.max(1, vw)), 0, maxPage);
+    goTo(targetPage);
   }, [goTo, vw]);
 
   return {
