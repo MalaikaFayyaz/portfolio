@@ -61,8 +61,8 @@ export default function App() {
         <div className="pf-scroll" ref={scrollRef} onScroll={onScroll} {...bindDrag}>
           <HomeSection />
           <AboutSection />
-          <ExperienceSection />
-          <ProjectsSection domain={domain} setDomain={setDomain} />
+          <ExperienceSection isTouch={isTouch} />
+          <ProjectsSection domain={domain} setDomain={setDomain} isTouch={isTouch} />
         </div>
       </CarPositionContext.Provider>
     </div>

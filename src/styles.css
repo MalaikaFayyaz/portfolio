@@ -796,3 +796,49 @@ p.pf-desc {
   color: var(--muted);
   letter-spacing: 0.08em;
 }
+
+.pf-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 43, 54, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.pf-modal-frame {
+  width: min(620px, 100%);
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - 36px);
+  display: flex;
+}
+
+.pf-modal-frame > * {
+  min-height: 0;
+  max-height: 100%;
+  flex: 1;
+}
+
+.pf-modal .experience-detail,
+.pf-modal .project-carousel-panel {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.pf-modal .project-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.pf-modal .project-carousel-panel {
+  flex: 1;
+  min-height: 120px;
+  touch-action: none;
+}

@@ -230,6 +230,8 @@ export function usePortfolioScroll() {
 
   const onPointerDown = useCallback((event) => {
     if (event.target.closest("[data-no-drag]")) return;
+    // Gestures starting inside a mobile modal belong to the modal.
+    if (event.target.closest(".pf-modal")) return;
     dragRef.current = {
       active: true, startX: event.clientX, startY: event.clientY,
       startScroll: scrollRef.current?.scrollLeft ?? 0,
