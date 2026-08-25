@@ -20,8 +20,7 @@ export const EXPERIENCES = [
     "org": "MaqMinds",
     "period": "July 2025 – September 2025",
     "location": "Johar Town, Lahore.",
-    "summary": "Engineered internal tools and data dashboards to drive business process automation and support digital transformation initiatives.",
-    "description": "Focused on developing low-code internal applications and integrating backend systems to streamline operational workflows and enhance decision-making.",
+    "summary": "Built internal tools using retool.",
     "responsibilities": [
       "Architected internal tools and dashboards using Retool to automate core business workflows, improving team efficiency and reducing manual effort.",
       "Engineered seamless integrations with APIs and databases (SQL, MongoDB) to ensure consistent and reliable data flow across platforms.",
@@ -40,8 +39,7 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "January 2024 – January 2025",
     "location": "Hybrid",
-    "summary": "Orchestrated operational and technical support to drive the successful execution of educational programs and digital outreach.",
-    "description": "Led the end-to-end coordination of a major programming camp launch, managing all aspects from digital marketing and content creation to technical execution, ensuring a seamless experience for over 150 students.",
+    "summary": "Orchestrated end-to-end execution of programming camps and technical operations to drive educational outreach.",
     "responsibilities": [
       "Directed the full-cycle execution of programming camps, including campaign strategy, social media management, email marketing, and promotional material design.",
       "Managed website content and updates using CMS platforms, ensuring accurate and engaging information delivery.",
@@ -58,7 +56,7 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "June 2024 – August 2024 & December 2024 – January 2025",
     "location": "Lahore, Pakistan",
-    "summary": "Mentored students in foundational programming concepts, fostering a collaborative learning environment and guiding them through hands-on projects.",
+    "summary": "Mentored students in Python and C++ through hands-on coding projects and personalized academic support.",
     "description": "Supported instructors in intensive summer and winter coding camps, providing dedicated academic support to students from diverse backgrounds, ranging from beginners to intermediate learners.",
     "responsibilities": [
       "Mentored students on coding projects and core concepts using Python and C++, facilitating both one-on-one and group learning sessions.",
@@ -77,7 +75,7 @@ export const EXPERIENCES = [
     "org": "Self-Employed",
     "period": "2022 – 2026",
     "location": "Lahore, Pakistan",
-    "summary": "Provided over four years of personalized academic tutoring, helping students build confidence and mastery in challenging STEM subjects.",
+    "summary": "Provided personalized academic tutoring in STEM subjects for over four years to students in grades 6–10.",
     "description": "Designed and delivered customized learning plans for students across grades 6-10, focusing on developing strong conceptual foundations and independent problem-solving skills.",
     "responsibilities": [
       "Delivered personalized tutoring in Mathematics, Computer Science, Physics, and programming fundamentals to students in Grades 6-10.",
@@ -97,7 +95,7 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "February 2024 – January 2025",
     "location": "Hybrid",
-    "summary": "Managed the end-to-end video content lifecycle, from raw footage to final publication, supporting the organization's educational and promotional content strategy.",
+    "summary": "Managed end-to-end video content preparation and publishing for educational and promotional purposes.",
     "description": "Transitioned from social media management to the video editing team, taking full ownership of the content preparation pipeline to enhance the quality and reach of digital educational materials.",
     "responsibilities": [
       "Led the complete video editing workflow, including footage sorting, editing, and final preparation for publication.",
@@ -115,7 +113,7 @@ export const EXPERIENCES = [
     "org": "Freelance",
     "period": "August 2022 – July 2023",
     "location": "Remote",
-    "summary": "Delivered creative design solutions for diverse clients, enhancing visual communication and branding through compelling graphics.",
+    "summary": "Delivered creative graphic design solutions for diverse freelance clients, including ads, CVs, and posters.",
     "description": "Operated as a freelance graphic designer, undertaking a variety of projects that significantly honed my creative and technical design skills, from concept to final delivery.",
     "responsibilities": [
       "Designed a wide range of marketing and branding collateral, including advertising materials, professional CVs, posters, and digital assets.",

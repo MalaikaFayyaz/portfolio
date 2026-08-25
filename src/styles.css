@@ -429,6 +429,7 @@ p.pf-desc {
   display: block;
   width: 100%;
   background: transparent;
+  margin-top: auto;
   border-top: 0;
   border-right: 0;
   border-bottom: 0;
@@ -465,6 +466,39 @@ p.pf-desc {
 .exp-item.is-selected {
   border-left-color: var(--cyan);
   outline: none;
+}
+
+.exp-carousel {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  margin-top: 14px;
+  transition: opacity 200ms ease;
+}
+
+.exp-carousel-track {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}experi
+
+.exp-carousel-track .exp-item {
+  flex: none;
+  margin-bottom: 0;
+}
+
+.exp-carousel-mist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 43, 54, 0) 0%, rgba(0, 43, 54, 0.9) 70%, #002b36 100%);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: opacity 320ms ease;
 }
 
 .experience-content {

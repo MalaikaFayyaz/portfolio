@@ -2,27 +2,17 @@ import { useState, memo } from "react";
 import { createPortal } from "react-dom";
 import { EXPERIENCES } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
+import ExperienceCarousel from "../components/ExperienceCarousel";
 import { audioEngine } from "../assets/audio";
 
-
-// Keep the original entries and their left-side copy intact. The new data is
-// only used to fill the detail panel for the corresponding selected item.
-const EXPERIENCE_ITEMS = [
-  {
-    id: "software-engineer",
-    role: "Software Engineer Intern — MaqMinds",
-    period: "July 2025 – September 2025",
-    summary: "Built internal tools using Retool.",
-    details: EXPERIENCES[0],
-  },
-  {
-    id: "intern",
-    role: "Tech Head Assistant — Seed Programming",
-    period: "January 2024 – January 2025",
-    summary: "Launched and Managed the Winter Camp.",
-    details: EXPERIENCES[1],
-  },
-];
+const EXPERIENCE_ITEMS = EXPERIENCES.map((exp) => ({
+  id: exp.id,
+  role: exp.role,
+  period: exp.period,
+  org: exp.org,
+  summary: exp.summary,
+  details: exp,
+}));
 
 function ExperienceSection({ isTouch = false }) {
   const [selectedId, setSelectedId] = useState(null);
@@ -50,17 +40,17 @@ function ExperienceSection({ isTouch = false }) {
         <div className="experience-detail-columns">
           <div>
             <h3>Responsibilities</h3>
-            <ul>{selected.details.responsibilities.map((item) => <li key={item}><span>▸</span>{item}</li>)}</ul>
+            <ul>{(selected.details.responsibilities ?? []).map((item) => <li key={item}><span>▸</span>{item}</li>)}</ul>
           </div>
           <div>
             <h3>Achievements</h3>
-            <ul>{selected.details.achievements.map((item) => <li key={item}><span>✓</span>{item}</li>)}</ul>
+            <ul>{(selected.details.achievements ?? []).map((item) => <li key={item}><span>✓</span>{item}</li>)}</ul>
           </div>
         </div>
 
         <div className="experience-tech">
           <h3>Technologies</h3>
-          <div>{selected.details.technologies.map((item) => <span key={item}>{item}</span>)}</div>
+          <div>{(selected.details.technologies ?? []).map((item) => <span key={item}>{item}</span>)}</div>
         </div>
       </div>
     </HoloPanel>
@@ -74,20 +64,11 @@ function ExperienceSection({ isTouch = false }) {
             <div className="eyebrow">Experience</div>
             <h1 className="pf-title">where i've <span className="accent">worked</span>.</h1>
 
-            {EXPERIENCE_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`exp-item${selected?.id === item.id ? " is-selected" : ""}`}
-                onClick={() => select(item.id)}
-                aria-expanded={selected?.id === item.id}
-                aria-controls="experience-details"
-              >
-                <span className="role">{item.role}</span>
-                <span className="meta">{item.period}</span>
-                <span className="desc">{item.summary}</span>
-              </button>
-            ))}
+            <ExperienceCarousel
+              items={EXPERIENCE_ITEMS}
+              selectedId={selectedId}
+              onSelect={select}
+            />
           </div>
 
           {!isTouch && (
