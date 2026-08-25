@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, memo } from "react";
+import { useEffect, useMemo, useRef, useState, memo } from "react";
 import { createPortal } from "react-dom";
 import { DOMAINS } from "../data";
 import { DOMAINS as PROJECT_DOMAINS } from "../assets/data";
@@ -8,6 +8,8 @@ import { audioEngine } from "../assets/audio";
 function ProjectsSection({ domain, setDomain, isTouch = false }) {
   const [index, setIndex] = useState(0);
   const swipeRef = useRef(null);
+  const carouselRef = useRef(null);
+  const wheelStateRef = useRef({ accumulated: 0, lastTime: 0, lockedUntil: 0 });
   const currentDomain = useMemo(
     () => PROJECT_DOMAINS.find((item) => item.id === domain) ?? null,
     [domain]
@@ -33,17 +35,120 @@ function ProjectsSection({ domain, setDomain, isTouch = false }) {
     setIndex(0);
   };
 
+  // Desktop: vertical wheel over the carousel steps through projects instead
+  // of panning the page. Mobile: touches that START inside the top/bottom
+  // edge bands of the card flip projects; touches elsewhere scroll the card.
+  // The flip decision is deferred to the first real movement so plain taps
+  // (arrows, close button, links) always go through untouched.
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return undefined;
+
+    const EDGE_TOP = 56;
+    const EDGE_BOTTOM = 72;
+    let gesture = null;
+
+    const panelRect = () => {
+      const panel = el.querySelector(".project-carousel-panel");
+      return panel ? panel.getBoundingClientRect() : null;
+    };
+
+    const onTouchStart = (event) => {
+      const rect = panelRect();
+      const touch = event.touches?.[0];
+      if (!rect || !touch) return;
+      const withinPanel = touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+      const inEdge = withinPanel &&
+        (touch.clientY - rect.top < EDGE_TOP || rect.bottom - touch.clientY < EDGE_BOTTOM);
+      gesture = inEdge
+        ? { startX: touch.clientX, startY: touch.clientY, decided: false, flip: false }
+        : null;
+    };
+
+    const onTouchMove = (event) => {
+      if (!gesture) return;
+      const touch = event.touches?.[0];
+      if (!touch) return;
+      if (gesture.flip) {
+        if (event.cancelable) event.preventDefault();
+        return;
+      }
+      if (gesture.decided) return;
+      const dy = touch.clientY - gesture.startY;
+      const dx = touch.clientX - gesture.startX;
+      if (Math.abs(dy) < 10 && Math.abs(dx) < 10) return;
+      gesture.decided = true;
+      // Vertical intent from an edge band claims the whole gesture before
+      // native scrolling can start.
+      if (Math.abs(dy) > Math.abs(dx)) {
+        gesture.flip = true;
+        if (event.cancelable) event.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (event) => {
+      if (!gesture) return;
+      const settled = gesture;
+      gesture = null;
+      if (!settled.flip) return;
+      const touch = event.changedTouches?.[0];
+      if (!touch) return;
+      const dy = touch.clientY - settled.startY;
+      const dx = touch.clientX - settled.startX;
+      if (!(Math.abs(dy) > 42 && Math.abs(dy) > Math.abs(dx))) return;
+      step(dy < 0 ? 1 : -1);
+    };
+
+    const onTouchCancel = () => { gesture = null; };
+
+    const onWheel = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (currentDomain && currentDomain.projects.length < 2) return;
+      const now = performance.now();
+      const state = wheelStateRef.current;
+      if (now < state.lockedUntil) return;
+      if (now - state.lastTime > 260) state.accumulated = 0;
+      state.lastTime = now;
+      state.accumulated += event.deltaY || event.deltaX;
+      if (Math.abs(state.accumulated) >= 60) {
+        step(state.accumulated > 0 ? 1 : -1);
+        state.accumulated = 0;
+        state.lockedUntil = now + 380;
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    el.addEventListener("touchcancel", onTouchCancel);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchCancel);
+    };
+  });
+
   const beginSwipe = (event) => {
     swipeRef.current = { x: event.clientX, y: event.clientY };
   };
 
   const endSwipe = (event) => {
+    // Touch flips are fully handled by the touch handlers above; pointer
+    // swipes here only serve mouse drags. Native-scrolling touches end in
+    // pointercancel, which resets swipeRef without flipping anything.
+    if (event.pointerType !== "mouse") {
+      swipeRef.current = null;
+      return;
+    }
     const start = swipeRef.current;
     swipeRef.current = null;
     if (!start) return;
     const deltaX = event.clientX - start.x;
     const deltaY = event.clientY - start.y;
-    // A committed vertical swipe always flips to another project.
     if (!(Math.abs(deltaY) > 42 && Math.abs(deltaY) > Math.abs(deltaX))) return;
     step(deltaY < 0 ? 1 : -1);
   };
@@ -51,6 +156,7 @@ function ProjectsSection({ domain, setDomain, isTouch = false }) {
   const carousel = project && currentDomain && (
     <div
       className="project-carousel"
+      ref={carouselRef}
       data-no-drag
       onPointerDown={beginSwipe}
       onPointerUp={endSwipe}
@@ -92,7 +198,7 @@ function ProjectsSection({ domain, setDomain, isTouch = false }) {
   return (
     <section className="pf-page">
       <div className="pf-content projects-content">
-        <div className="projects-layout">
+        <div className={`projects-layout${currentDomain ? " has-selection" : ""}`}>
           <div className="projects-domain-area">
             <div className="eyebrow">Projects</div>
             <h1 className="pf-title">pick a <span className="accent">domain</span>.</h1>

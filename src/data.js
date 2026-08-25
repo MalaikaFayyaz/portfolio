@@ -5,24 +5,30 @@ export const DOMAINS = [
     id: "software",
     label: "Software",
     blurb: "Full-stack apps, tools, and things that ship.",
-    items: ["Realtime collab editor", "CLI task runner", "Portfolio engine (this site)"]
+    items: ["Pixel-Drive portfolio", "Grandir", "AURIS", "DIY community platform"]
+  },
+  {
+    id: "systems",
+    label: "Systems Programming",
+    blurb: "Kernels, memory, and low-level control.",
+    items: ["Memory-mapped file system in xv6", "RSA key generator"]
+  },
+  {
+    id: "hardware",
+    label: "Hardware",
+    blurb: "Circuits, processors, and low-level architecture.",
+    items: ["Mano's Basic Computer in Logisim"]
   },
   {
     id: "ai",
     label: "AI / ML",
     blurb: "Models, pipelines, and the occasional overfit.",
-    items: ["Terrain-generation model", "Resume-ranking classifier", "Small transformer from scratch"]
-  },
-  {
-    id: "hardware",
-    label: "Hardware",
-    blurb: "Circuits, sensors, things that beep.",
-    items: ["ESP32 weather rig", "Line-following robot", "Custom mechanical keyboard"]
+    items: ["Household economic classifier", "Handwriting recognition MLOps pipeline", "ASL alphabet classifier"]
   },
   {
     id: "research",
     label: "Research",
     blurb: "Papers, experiments, open questions.",
-    items: ["Pathfinding under uncertainty", "Procedural terrain survey", "Undergrad thesis notes"]
+    items: ["ML approximation of optimal page replacement"]
   }
 ];

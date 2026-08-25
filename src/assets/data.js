@@ -131,137 +131,187 @@ export const EXPERIENCES = [
 
 export const DOMAINS = [
   {
-    id: "software",
-    label: "Software",
-    blurb: "Full-stack apps, tools, and things that ship.",
-    glyph: "◱",
-    projects: [
+  "id": "software",
+  "label": "Software",
+  "blurb": "Full-stack apps, tools, and things that ship.",
+  "glyph": "◱",
+  "projects": [
+    {
+      "id": "sw-1",
+      "title": "Pixel-Drive Interactive Portfolio",
+      "tagline": "Game-inspired portfolio with driveable car physics",
+      "description": "A side-scrolling portfolio where visitors drive through résumé sections.",
+      "stack": ["React 18", "Vite", "Canvas API", "Web Audio API", "SVG", "CSS3"],
+      "highlights": [
+        "Built vehicle physics with unified scroll controller supporting wheel, trackpad, touch-drag, keyboard, and nav-bar input.",
+        "Rendered infinite seamless parallax terrain from integer-harmonic wave functions as tiled SVG layers.",
+        "Developed Canvas particle portrait with pointer-repulsion forces and devicePixelRatio-aware sizing.",
+        "Sustained smooth 60fps animation with rAF loops — zero shipped audio or image assets."
+      ],
+      "link": "#"
+    },
+    {
+      "id": "sw-2",
+      "title": "Grandir ",
+      "tagline": "Configurable commerce platform for small businesses",
+      "description": "A modular commerce platform with configurable storefronts, product catalogues, and order management, built with a scalable Supabase backend and React frontend.",
+      "stack": ["React", "TypeScript", "Tailwind CSS", "Supabase"],
+      "highlights": [
+        "Architected scalable Supabase database schema with Row-Level Security and normalized data models.",
+        "Designed automated database workflows following modular architecture for maintainability.",
+        "Collaborated using Git feature branches and documented decisions through architecture documentation."
+      ],
+      "link": "#"
+    },
+    {
+      "id": "sw-3",
+      "title": "AURIS (Audiobook Sharing Platform)",
+      "tagline": "Modular audiobook platform with streaming and playback",
+      "description": "A full-featured audiobook sharing platform supporting authentication, bookmarking, playback progress tracking, and file management.",
+      "stack": ["React", "Node.js", "Express", "MongoDB"],
+      "highlights": [
+        "Designed and implemented modular architecture with authentication and bookmarking features.",
+        "Built backend APIs and file-management workflows for audiobook storage and streaming."
+      ],
+      "link": "#"
+    },
+    {
+      "id": "sw-4",
+      "title": "DIY Community Platform",
+      "tagline": "Full-stack MERN community application",
+      "description": "A full-stack community platform for user-generated content.",
+      "stack": ["MongoDB", "Express.js", "React", "Node.js"],
+      "highlights": [
+        "Built authentication, CRUD operations, content filtering, and a responsive UI end to end.",
+        "Designed REST APIs and integrated MongoDB for efficient data management."
+      ],
+      "link": "#"
+    }
+  ]
+},
+  {
+    "id": "systems",
+    "label": "Systems Programming",
+    "blurb": "Kernels, memory, and low-level control.",
+    "glyph": "◧",
+    "projects": [
       {
-        id: "sw-1",
-        title: "Realtime Collab Editor",
-        tagline: "Google-docs-style editor with CRDT sync",
-        description:
-          "A collaborative text editor supporting simultaneous multi-user editing using conflict-free replicated data types, with presence cursors and offline recovery.",
-        stack: ["React", "TypeScript", "WebSockets", "Yjs"],
-        highlights: ["Sub-100ms sync latency", "Offline-first with automatic merge", "500+ concurrent test sessions"],
-        link: "#",
+        "id": "sys-1",
+        "title": "Memory-Mapped File System in xv6",
+        "tagline": "mmap/munmap system calls in RISC-V kernel",
+        "description": "Implemented memory-mapped file I/O system calls in the xv6-RISC-V kernel with demand paging and lazy allocation.",
+        "stack": ["C", "xv6", "RISC-V", "Kernel Development"],
+        "highlights": [
+          "Implemented mmap/munmap system calls with demand paging and lazy allocation, loading pages only on access to reduce memory overhead.",
+          "Debugged kernel-level components including page fault handling, interrupt management, and user-kernel context switching."
+        ],
+        "link": "#"
       },
       {
-        id: "sw-2",
-        title: "CLI Task Runner",
-        tagline: "A tiny, fast task orchestrator",
-        description:
-          "A dependency-aware task runner for monorepos with smart caching, parallel execution, and a plugin API.",
-        stack: ["Rust", "Node.js"],
-        highlights: ["3x faster than prior tool", "Content-hash based caching", "Published on npm & crates.io"],
-        link: "#",
-      },
+        "id": "sys-2",
+        "title": "RSA Key Generator",
+        "tagline": "Secure key generation with distributed computing",
+        "description": "A secure RSA key generation system with client-server architecture, leveraging Azure VMs for distributed prime number computation.",
+        "stack": ["C", "Azure VMs", "Socket Programming"],
+        "highlights": [
+          "Built client-server architecture for secure RSA key generation.",
+          "Integrated Azure Virtual Machines for distributed key generation and prime number computation.",
+          "Applied socket programming for inter-process communication and scalability testing."
+        ],
+        "link": "#"
+      }
+    ]
+  },
+    {
+    "id": "hardware",
+    "label": "Hardware",
+    "blurb": "Circuits, processors, and low-level architecture.",
+    "glyph": "◧",
+    "projects": [
       {
-        id: "sw-3",
-        title: "Portfolio Engine (this site)",
-        tagline: "The pixel world you're standing in",
-        description:
-          "A hand-built side-scrolling portfolio engine with a driveable car, terrain physics, holographic UI panels, and synthesized ambient audio.",
-        stack: ["React", "TypeScript", "Tailwind", "Web Audio API"],
-        highlights: ["Physics-based driving", "Procedural terrain", "Zero external audio/image assets"],
-        link: "#",
-      },
-    ],
+        "id": "hw-1",
+        "title": "Mano's Basic Computer Implementation",
+        "tagline": "Complete processor implementation in Logisim",
+        "description": "A full and exact working implementation of the processor described in Morris Mano's 'Computer System Architecture', with all instructions fully functional — covering the complete instruction cycle, control logic, registers, ALU, and memory.",
+        "stack": ["Logisim", "Digital Logic Design", "Computer Architecture"],
+        "highlights": [
+          "Implemented all instructions from Mano's Basic Computer specification with full functionality.",
+          "Designed complete instruction cycle including fetch, decode, and execute phases.",
+          "Built control logic, register file, ALU, and memory subsystems from basic gates.",
+          "Verified exact behavior matching textbook specifications through comprehensive testing."
+        ],
+        "link": "#"
+      }
+    ]
   },
   {
-    id: "ai",
-    label: "AI / ML",
-    blurb: "Models, pipelines, and the occasional overfit.",
-    glyph: "◈",
-    projects: [
+    "id": "ai",
+    "label": "AI / ML",
+    "blurb": "Models, pipelines, and the occasional overfit.",
+    "glyph": "◈",
+    "projects": [
       {
-        id: "ai-1",
-        title: "Terrain-Generation Model",
-        tagline: "Procedural landscapes via learned heightmaps",
-        description:
-          "A lightweight generative model producing plausible terrain heightmaps for use in games and visualizations, trained on satellite elevation data.",
-        stack: ["PyTorch", "NumPy", "CUDA"],
-        highlights: ["Trained on 50k tile dataset", "Real-time inference (<10ms/tile)"],
-        link: "#",
+        "id": "ai-1",
+        "title": "Household Economic Classification System",
+        "tagline": "ML pipeline for economic status classification",
+        "description": "A bag-level machine learning pipeline classifying household economic status from grouped demographic and financial records.",
+        "stack": ["Python", "Random Forest", "XGBoost", "LightGBM", "CatBoost", "PyTorch"],
+        "highlights": [
+          "Engineered 40+ statistical, diversity, inequality, and socio-economic interaction features from raw data.",
+          "Evaluated multiple models including Random Forest, XGBoost, LightGBM, CatBoost, and PyTorch neural networks.",
+          "Improved macro F1-score from 0.54 to 0.73 through feature engineering, class balancing, and threshold optimization."
+        ],
+        "link": "#"
       },
       {
-        id: "ai-2",
-        title: "Resume-Ranking Classifier",
-        tagline: "Explainable candidate-role matching",
-        description:
-          "A transparent ranking model that scores resume-role fit and explains its reasoning via feature attributions rather than a black box score.",
-        stack: ["Python", "scikit-learn", "SHAP"],
-        highlights: ["78% agreement with human reviewers", "Full explainability report per prediction"],
-        link: "#",
+        "id": "ai-2",
+        "title": "Handwritten Paragraph Recognition MLOps Pipeline",
+        "tagline": "Deployed deep learning OCR system",
+        "description": "End-to-end MLOps deployment of a handwriting recognition system based on FSDL architecture using Docker, AWS Lambda, and REST APIs.",
+        "stack": ["Python", "Docker", "AWS Lambda", "CNN", "Transformer", "ResNet"],
+        "highlights": [
+          "Deployed deep learning OCR system with /health and /predict REST endpoints.",
+          "Worked with CNN, Transformer, and ResNet-Transformer architectures on IAMParagraphs datasets.",
+          "Debugged infrastructure issues including Lambda integrations, API failures, and server-side inference errors."
+        ],
+        "link": "#"
       },
       {
-        id: "ai-3",
-        title: "Small Transformer From Scratch",
-        tagline: "A character-level transformer, no frameworks",
-        description:
-          "An educational reimplementation of a decoder-only transformer built from raw tensor ops, used to teach attention mechanisms in a workshop.",
-        stack: ["Python", "NumPy"],
-        highlights: ["No autograd library used", "Used in a 40-person workshop"],
-        link: "#",
-      },
-    ],
+        "id": "ai-3",
+        "title": "ASL Alphabet Classifier",
+        "tagline": "CNN-based sign language recognition",
+        "description": "A CNN-based image classifier for American Sign Language alphabet recognition using TensorFlow/Keras.",
+        "stack": ["Python", "TensorFlow", "Keras"],
+        "highlights": [
+          "Designed CNN architecture for image classification.",
+          "Applied preprocessing, training, and evaluation techniques for recognition accuracy."
+        ],
+        "link": "#"
+      }
+    ]
   },
   {
-    id: "hardware",
-    label: "Hardware",
-    blurb: "Circuits, sensors, things that beep.",
-    glyph: "◧",
-    projects: [
+    "id": "research",
+    "label": "Research",
+    "blurb": "Papers, experiments, open questions.",
+    "glyph": "◭",
+    "projects": [
       {
-        id: "hw-1",
-        title: "ESP32 Weather Rig",
-        tagline: "Solar-powered weather station",
-        description:
-          "A self-sustaining outdoor sensor rig streaming temperature, humidity, and air-quality readings to a small dashboard over MQTT.",
-        stack: ["ESP32", "MQTT", "C++"],
-        highlights: ["6-month uninterrupted uptime", "Solar + battery power management"],
-        link: "#",
-      },
-      {
-        id: "hw-2",
-        title: "Line-Following Robot",
-        tagline: "PID-tuned autonomous bot",
-        description:
-          "A competition robot using IR sensor arrays and a tuned PID loop to navigate track courses at high speed.",
-        stack: ["Arduino", "C++", "PID Control"],
-        highlights: ["Top-3 finish, regional competition", "Custom-etched PCB"],
-        link: "#",
-      },
-    ],
-  },
-  {
-    id: "research",
-    label: "Research",
-    blurb: "Papers, experiments, open questions.",
-    glyph: "◭",
-    projects: [
-      {
-        id: "res-1",
-        title: "Pathfinding Under Uncertainty",
-        tagline: "Robust routing on noisy graphs",
-        description:
-          "A study comparing pathfinding algorithms under uncertain edge weights, proposing a hybrid heuristic with strong worst-case guarantees.",
-        stack: ["Python", "NetworkX", "LaTeX"],
-        highlights: ["Presented at undergrad research symposium", "12% improvement over baseline heuristic"],
-        link: "#",
-      },
-      {
-        id: "res-2",
-        title: "Procedural Terrain Survey",
-        tagline: "A literature review + benchmark suite",
-        description:
-          "A survey of procedural terrain-generation techniques with a reproducible benchmark comparing quality, speed, and controllability.",
-        stack: ["Python", "Jupyter"],
-        highlights: ["Open-sourced benchmark suite", "Cited in 2 follow-up student projects"],
-        link: "#",
-      },
-    ],
-  },
+        "id": "res-1",
+        "title": "ML Approximation of Optimal Page Replacement",
+        "tagline": "Learning-based cache replacement policies",
+        "description": "Investigating machine learning approaches for approximating the Optimal Page Replacement (OPT) algorithm using historical memory-access traces and cache-state information.",
+        "stack": ["Python", "Decision Trees", "MLPs", "Random Forest", "Logistic Regression"],
+        "highlights": [
+          "Developed end-to-end pipelines for trace processing, dataset generation, and cache-policy simulation.",
+          "Expanded feature set from 5 to 11 features capturing temporal, spatial, cache-state, and eviction-history signals.",
+          "Evaluated models on Synthetic, MSR Cambridge, and FIU traces achieving performance beyond LRU across multiple workloads.",
+          "Narrowed performance gap with OPT through iterative model refinement and feature engineering."
+        ],
+        "link": "#"
+      }
+    ]
+  }
 ];
 
 export const SKILLS = [
