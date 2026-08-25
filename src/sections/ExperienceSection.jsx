@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { EXPERIENCES } from "../assets/data";
 import { HoloPanel } from "../components/HoloPanel";
 import { audioEngine } from "../assets/audio";
-import EyeTracker from "../components/EyeTracker";
+
 
 // Keep the original entries and their left-side copy intact. The new data is
 // only used to fill the detail panel for the corresponding selected item.
@@ -12,14 +12,14 @@ const EXPERIENCE_ITEMS = [
     id: "software-engineer",
     role: "Software Engineer Intern — MaqMinds",
     period: "July 2025 – September 2025",
-    summary: "One or two lines on scope and impact. Keep it concrete.",
+    summary: "Built internal tools using Retool.",
     details: EXPERIENCES[0],
   },
   {
     id: "intern",
     role: "Tech Head Assistant — Seed Programming",
     period: "January 2024 – January 2025",
-    summary: "Same format, same brevity. Numbers help if you have them.",
+    summary: "Launched and Managed the Winter Camp.",
     details: EXPERIENCES[1],
   },
 ];
@@ -71,7 +71,6 @@ function ExperienceSection({ isTouch = false }) {
       <div className="pf-content experience-content">
         <div className="experience-layout">
           <div className="experience-list">
-            <EyeTracker />
             <div className="eyebrow">Experience</div>
             <h1 className="pf-title">where i've <span className="accent">worked</span>.</h1>
 

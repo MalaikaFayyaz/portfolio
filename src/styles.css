@@ -239,26 +239,40 @@ button, a {
   justify-content: center;
   align-items: center;
   /* Reduce vertical spacing to move portrait up */
-  padding: 8px 0 0;
+  /* padding: 8px 0 0; */
+}
+
+.ascii-wrap {
+  width: 65%;
+  height: 65%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: 700px) {
   .pf-home-layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
+    gap: 3vh;
   }
 
-  .pf-portrait-panel {
+  .pf-portrait-panel {padding: clamp(24px, 11vh, 30px) 0 0;
     order: -1;
-    padding: 150px 0 0;
-    margin-bottom: -14px;
-    transform: translateY(-18px);
+    padding: clamp(1vh, 2vh, 130px) 0 0;
+    margin-bottom: -10px;
   }
 
   .pf-home-copy {
     max-width: 520px;
     text-align: center;
   }
+  .ascii-wrap {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 }
 
 .simulation-container {

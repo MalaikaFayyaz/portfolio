@@ -16,26 +16,18 @@ const baseCell = Math.max(2, spacing * 0.82);
 const contentWidth = maxX - minX + spacing;
 const contentHeight = maxY - minY + spacing;
 
-const calculateSize = (width) => {
-  let size = 200;
-  if (width <= 480) size = Math.min(280, width - 32);
-  else if (width <= 768) size = Math.min(340, width - 48);
-  return Math.max(200, size);
-};
-
-// Build particles from pixelData
-// Tweak Y_SHIFT to move the portrait up (negative) or down (positive), in px at the rendered size.
-const Y_SHIFT = -40;
-
+// Build particles from pixelData. The drawing is always centered inside the
+// canvas on both axes, so trimming rows/columns from the data shifts nothing.
 const buildParticlesFromPixelData = (size) => {
-  const scale = size / Math.max(contentWidth, contentHeight);
-  const paddingX = 16;
-  const paddingY = 16 + Y_SHIFT;
+  const drawable = size - 24;
+  const scale = drawable / Math.max(contentWidth, contentHeight);
   const cellSize = Math.max(2, baseCell * scale);
-  
+  const offsetX = (size - contentWidth * scale) / 2;
+  const offsetY = (size - contentHeight * scale) / 2;
+
   return pixelData.map(p => {
-    const x = (p.x - minX) * scale + paddingX;
-    const y = (p.y - minY) * scale + paddingY;
+    const x = (p.x - minX) * scale + offsetX;
+    const y = (p.y - minY) * scale + offsetY;
     return {
       x: Number(x.toFixed(1)),
       y: Number(y.toFixed(1)),
@@ -53,44 +45,62 @@ const buildParticlesFromPixelData = (size) => {
   });
 };
 
+const MAX_PORTRAIT_SIZE = 520;
+
 const AsciiPortrait = () => {
+  const wrapRef = useRef(null);
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: -1000, y: -1000, active: false });
   const mouseTargetRef = useRef({ x: -1000, y: -1000 });
   const particlesRef = useRef([]);
   const startTimeRef = useRef(null);
-  const [size, setSize] = useState(() => calculateSize(window.innerWidth));
+  const [size, setSize] = useState(0);
   const [dataReady, setDataReady] = useState(false);
 
+  // Size follows the actual space the panel gives us (width), capped so the
+  // whole thing also fits vertically in the viewport.
   useEffect(() => {
-    const updateSize = () => {
-      setSize(calculateSize(window.innerWidth));
+    const el = wrapRef.current;
+    if (!el) return undefined;
+
+    const measure = () => {
+      const available = Math.min(el.clientWidth, window.innerHeight * 0.52, MAX_PORTRAIT_SIZE);
+      setSize(Math.max(160, Math.floor(available)));
     };
 
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
   useEffect(() => {
+    if (!size) return undefined;
     // Build particles from pixelData
     particlesRef.current = buildParticlesFromPixelData(size);
     setDataReady(true);
     startTimeRef.current = performance.now();
+    return undefined;
   }, [size]);
 
   useEffect(() => {
+    if (!size || !dataReady) return undefined;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return undefined;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) return undefined;
 
     const dpr = window.devicePixelRatio || 1;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
     canvas.style.width = `${size}px`;
     canvas.style.height = `${size}px`;
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     let animationId;
 
@@ -170,12 +180,12 @@ const AsciiPortrait = () => {
         const alpha = Math.min(1, p.currentAlpha + 0.15);
         ctx.globalAlpha = alpha;
         ctx.fillStyle = colorForAlpha(p.alpha);
-        
+
         // Draw pixel square
         const cell = Math.max(1.8, p.cellSize || 3);
         ctx.fillRect(p.x - cell/2, p.y - cell/2, cell, cell);
       });
-      
+
       ctx.globalAlpha = 1;
     };
 
@@ -222,18 +232,17 @@ const AsciiPortrait = () => {
   }, [size, dataReady]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        cursor: "crosshair",
-        touchAction: "none",
-        // display: "block",
-        // borderRadius: "12px",
-        // boxShadow: "0 0 30px rgba(100, 255, 218, 0.1)",
-      }}
-    />
+    <div ref={wrapRef} className="ascii-wrap">
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: size ? `${size}px` : "100%",
+          height: size ? `${size}px` : "auto",
+          cursor: "crosshair",
+          touchAction: "none",
+        }}
+      />
+    </div>
   );
 };
 
