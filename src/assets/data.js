@@ -19,18 +19,19 @@ export const EXPERIENCES = [
     "role": "Software Engineer Intern",
     "org": "MaqMinds",
     "period": "July 2025 – September 2025",
-    "location": "Johar Town, Lahore.",
-    "summary": "Built internal tools using retool.",
+    "location": "Johar Town, Lahore",
+    "summary": "Built internal tools and dashboards to automate business workflows and drive digital transformation.",
+    "description": "Developed low-code internal applications and integrated backend systems to streamline operations.",
     "responsibilities": [
-      "Architected internal tools and dashboards using Retool to automate core business workflows, improving team efficiency and reducing manual effort.",
-      "Engineered seamless integrations with APIs and databases (SQL, MongoDB) to ensure consistent and reliable data flow across platforms.",
-      "Collaborated closely with cross-functional engineers to design, test, and deploy robust, production-ready features within agile sprints.",
-      "Proactively debugged system issues, implemented feature enhancements, and iterated on UI/UX improvements based on direct stakeholder and client feedback."
+      "Built Retool dashboards to automate workflows and reduce manual effort.",
+      "Integrated APIs and databases (SQL, MongoDB) for seamless data flow.",
+      "Collaborated with engineers to deploy production-ready features.",
+      "Debugged issues and enhanced UI/UX based on stakeholder feedback."
     ],
     "technologies": ["JavaScript", "SQL", "MongoDB", "Retool"],
     "achievements": [
-      "Developed an automated appointment scheduling solution integrating Google Calendar, Gmail, and Classroom APIs, which streamlined client bookings and reduced scheduling overhead.",
-      "Designed and deployed a critical Retool workflow that automated a key internal business process, significantly cutting down processing time and improving accuracy."
+      "Built appointment scheduler integrating Google Calendar, Gmail, and Classroom APIs.",
+      "Deployed Retool workflow that automated key internal business processes."
     ]
   },
   {
@@ -39,15 +40,16 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "January 2024 – January 2025",
     "location": "Hybrid",
-    "summary": "Orchestrated end-to-end execution of programming camps and technical operations to drive educational outreach.",
+    "summary": "Orchestrated programming camp execution and technical operations to drive educational outreach.",
+    "description": "Led end-to-end camp coordination including marketing, content creation, and technical execution.",
     "responsibilities": [
-      "Directed the full-cycle execution of programming camps, including campaign strategy, social media management, email marketing, and promotional material design.",
-      "Managed website content and updates using CMS platforms, ensuring accurate and engaging information delivery.",
-      "Collaborated directly with the team lead to strategize and streamline outreach efforts, optimizing operational workflows and student engagement."
+      "Executed programming camp launches including social media, email campaigns, and promotional materials.",
+      "Managed website content using WordPress and CMS tools.",
+      "Collaborated with team lead to optimize outreach and operations."
     ],
     "technologies": ["WordPress", "Google Sheets", "Adobe Photoshop"],
     "achievements": [
-      "Successfully orchestrated the launch of summer and winter coding camps, achieving an enrollment of over 150 students."
+      "Launched summer and winter camps with 150+ student enrollment."
     ]
   },
   {
@@ -56,17 +58,17 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "June 2024 – August 2024 & December 2024 – January 2025",
     "location": "Lahore, Pakistan",
-    "summary": "Mentored students in Python and C++ through hands-on coding projects and personalized academic support.",
-    "description": "Supported instructors in intensive summer and winter coding camps, providing dedicated academic support to students from diverse backgrounds, ranging from beginners to intermediate learners.",
+    "summary": "Mentored students in Python and C++ through hands-on projects and personalized support.",
+    "description": "Supported summer and winter coding camps by providing academic guidance to diverse learners.",
     "responsibilities": [
-      "Mentored students on coding projects and core concepts using Python and C++, facilitating both one-on-one and group learning sessions.",
-      "Assisted students in problem-solving, debugging strategies, and completing coding exercises to solidify their understanding.",
-      "Monitored individual student progress and adapted teaching methods to address specific learning gaps and needs, ensuring no student was left behind."
+      "Mentored students on Python and C++ projects through one-on-one and group sessions.",
+      "Assisted with debugging strategies and problem-solving techniques.",
+      "Monitored student progress and adapted support based on individual needs."
     ],
     "technologies": ["Python", "C++"],
     "achievements": [
-      "Guided students from foundational coding concepts to successfully building their own projects, such as a 'Game of Life' simulation.",
-      "Fostered a supportive learning community, leading to students continuing to seek guidance and share their new projects long after the camps concluded."
+      "Guided students from basics to building projects like 'Game of Life'.",
+      "Maintained ongoing mentorship with students beyond camp completion."
     ]
   },
   {
@@ -75,18 +77,18 @@ export const EXPERIENCES = [
     "org": "Self-Employed",
     "period": "2022 – 2026",
     "location": "Lahore, Pakistan",
-    "summary": "Provided personalized academic tutoring in STEM subjects for over four years to students in grades 6–10.",
-    "description": "Designed and delivered customized learning plans for students across grades 6-10, focusing on developing strong conceptual foundations and independent problem-solving skills.",
+    "summary": "Provided personalized STEM tutoring for over four years to students in grades 6–10.",
+    "description": "Designed custom learning plans focused on building conceptual foundations and independent problem-solving.",
     "responsibilities": [
-      "Delivered personalized tutoring in Mathematics, Computer Science, Physics, and programming fundamentals to students in Grades 6-10.",
-      "Created tailored lesson plans aligned with each student's strengths, weaknesses, and academic goals, adapting to their unique learning pace.",
-      "Simplified complex mathematical and computational theories using practical examples, step-by-step explanations, and real-world applications.",
-      "Provided comprehensive support for homework, assignments, and exam preparation, continuously monitoring progress to address conceptual gaps."
+      "Tutored Mathematics, Physics, Computer Science, and programming fundamentals.",
+      "Created tailored lesson plans based on student strengths and learning pace.",
+      "Simplified complex concepts using practical examples and step-by-step explanations.",
+      "Supported homework, assignments, and exam preparation."
     ],
     "technologies": ["Mathematics", "Physics", "Programming Fundamentals"],
     "achievements": [
-      "Successfully guided a Grade 9 student who had previously failed an annual examination, helping them build foundational understanding and achieve a passing grade on their subsequent attempt.",
-      "Cultivated independent learning skills in students, moving them away from rote memorization towards deep conceptual understanding and self-reliance."
+      "Helped a Grade 9 student pass after previously failing annual exams.",
+      "Developed independent learning skills through conceptual understanding."
     ]
   },
   {
@@ -95,16 +97,16 @@ export const EXPERIENCES = [
     "org": "Seed Programming",
     "period": "February 2024 – January 2025",
     "location": "Hybrid",
-    "summary": "Managed end-to-end video content preparation and publishing for educational and promotional purposes.",
-    "description": "Transitioned from social media management to the video editing team, taking full ownership of the content preparation pipeline to enhance the quality and reach of digital educational materials.",
+    "summary": "Managed end-to-end video content preparation and publishing for educational purposes.",
+    "description": "Owned the complete video content pipeline from raw footage to final publication.",
     "responsibilities": [
-      "Led the complete video editing workflow, including footage sorting, editing, and final preparation for publication.",
-      "Managed the timely uploading and organization of video content on the organization's website and digital platforms.",
-      "Collaborated with the team to ensure all video content met quality standards and aligned with the organization's educational messaging."
+      "Edited videos including sorting, cutting, and final preparation.",
+      "Uploaded and organized video content on the website.",
+      "Ensured content met quality standards and educational messaging."
     ],
     "technologies": ["Adobe Premiere Pro", "Video Editing"],
     "achievements": [
-      "Streamlined the video content preparation process, ensuring consistent and high-quality output for educational and promotional purposes."
+      "Streamlined video content workflow for consistent quality output."
     ]
   },
   {
@@ -113,16 +115,16 @@ export const EXPERIENCES = [
     "org": "Freelance",
     "period": "August 2022 – July 2023",
     "location": "Remote",
-    "summary": "Delivered creative graphic design solutions for diverse freelance clients, including ads, CVs, and posters.",
-    "description": "Operated as a freelance graphic designer, undertaking a variety of projects that significantly honed my creative and technical design skills, from concept to final delivery.",
+    "summary": "Delivered creative graphic design solutions including ads, CVs, and posters.",
+    "description": "Provided freelance design services across diverse projects, from concept to final delivery.",
     "responsibilities": [
-      "Designed a wide range of marketing and branding collateral, including advertising materials, professional CVs, posters, and digital assets.",
-      "Collaborated with clients to understand their vision and deliver high-quality, impactful visuals that met their specific requirements.",
-      "Managed multiple projects concurrently, consistently meeting deadlines and maintaining a high standard of creativity and professionalism."
+      "Designed marketing materials, CVs, posters, and digital assets.",
+      "Collaborated with clients to understand and meet design requirements.",
+      "Managed multiple projects while meeting deadlines."
     ],
     "technologies": ["Adobe Photoshop", "Image Editing", "Online Graphics"],
     "achievements": [
-      "Experienced rapid skill growth and client satisfaction, successfully completing numerous design projects that strengthened my portfolio and professional capabilities."
+      "Built strong portfolio through successful completion of diverse client projects."
     ]
   }
 ];
