@@ -39,7 +39,7 @@ export default function App() {
   // The near hill layer is drawn at -(scrollX + idlePhase), so the ground
   // directly under the car corresponds to this terrain coordinate.
   const groundX = carWorldX + idlePhase;
-  const nearTerrainY = vh * 0.85 - hillY(groundX);
+  const nearTerrainY = vh * 0.89 - hillY(groundX);
   const carTop = nearTerrainY - 48;
   const slope = hillY(groundX + 6) - hillY(groundX - 6);
   const rotation = Math.max(-16, Math.min(16, slope * 2.2));

@@ -10,8 +10,8 @@ const FAR_IDLE_FACTOR = 0.55;
 const wrap = (value, period) => ((value % period) + period) % period;
 
 export default function HillsBackground({ vh, scrollX, idlePhase }) {
-  const nearTile = useMemo(() => buildHillPath(NEAR_PERIOD, vh * 0.85, nearHillY), [vh]);
-  const farTile = useMemo(() => buildHillPath(FAR_PERIOD, vh * 0.78, farHillY), [vh]);
+  const nearTile = useMemo(() => buildHillPath(NEAR_PERIOD, vh * 0.89, nearHillY), [vh]);
+  const farTile = useMemo(() => buildHillPath(FAR_PERIOD, vh * 0.82, farHillY), [vh]);
 
   const nearOffset = wrap(scrollX + idlePhase, NEAR_PERIOD);
   const farOffset = wrap(scrollX * FAR_SCROLL_FACTOR + idlePhase * FAR_IDLE_FACTOR, FAR_PERIOD);
