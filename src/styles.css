@@ -263,7 +263,7 @@ button, a {
   }
 
   .pf-home-copy {
-    max-width: 520px;
+    max-width: min(550px, 100%);
     text-align: center;
   }
   .ascii-wrap {
