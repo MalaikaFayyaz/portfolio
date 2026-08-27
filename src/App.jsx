@@ -53,7 +53,7 @@ export default function App() {
       <PortfolioNav activePage={activePage} goTo={goTo} />
       <HillsBackground vh={vh} scrollX={scrollX} idlePhase={idlePhase} />
 
-      <div style={{ position: "absolute", left: carScreenX - 43, top: carTop, zIndex: 15, transform: `scaleX(${facingDirection})` }}>
+      <div style={{ position: "absolute", left: carScreenX - 43, top: carTop, zIndex: 1, transform: `scaleX(${facingDirection})` }}>
         <CarSVG rotation={rotation * facingDirection} />
       </div>
 
