@@ -85,14 +85,15 @@ export default function ExperienceCarousel({ items, selectedId, onSelect }) {
     step(dy < 0 ? 1 : -1);
   };
 
-  const peek = slot ? slot * PEEK_RATIO : 96;
+  // Show 1.75 items (1.75 * slot) with 0.5 item in mist
+  const peek = slot ? slot * 0.5 : 54;
 
   return (
     <div
       className="exp-carousel"
       ref={viewportRef}
       data-no-drag
-      style={{ height: slot ? slot * 2 + peek : undefined, opacity: slot ? 1 : 0 }}
+      style={{ height: slot ? slot * 1.75 + peek : undefined, opacity: slot ? 1 : 0 }}
       onPointerDown={beginSwipe}
       onPointerUp={endSwipe}
       onPointerCancel={() => { swipeRef.current = null; }}
@@ -120,7 +121,21 @@ export default function ExperienceCarousel({ items, selectedId, onSelect }) {
       <div
         className="exp-carousel-mist"
         style={{ height: peek, opacity: index >= maxIndex ? 0 : 1 }}
-      />
+      >
+        {index < maxIndex && (
+          <button
+            className="exp-carousel-arrow"
+            onClick={(e) => {
+              e.stopPropagation();
+              step(1);
+            }}
+            aria-label="Show next experience"
+            type="button"
+          >
+            ⌄
+          </button>
+        )}
+      </div>
     </div>
   );
 }

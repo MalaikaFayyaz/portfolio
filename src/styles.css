@@ -510,7 +510,7 @@ p.pf-desc {
   margin-bottom: 0;
 }
 
-.exp-carousel-mist {
+/* .exp-carousel-mist {
   position: absolute;
   left: 0;
   right: 0;
@@ -520,7 +520,7 @@ p.pf-desc {
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   transition: opacity 320ms ease;
-}
+} */
 
 
 
@@ -957,4 +957,68 @@ p.pf-desc {
   overflow-x: hidden;
   overflow-y: auto;
   touch-action: pan-y;
+}
+
+/* Experience carousel arrow - matches project carousel style */
+.exp-carousel .exp-carousel-arrow {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: var(--cream);
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 1000;
+  line-height: 1;
+  text-shadow: 0 0 8px var(--cyan);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  position: absolute;
+  bottom: 38%;
+  left: 50%;
+  transform: translateX(-50%) scaleX(3.5);
+  animation: arrowBounce 1.2s ease-in-out infinite;
+}
+
+/* Continuous bouncing animation */
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateX(-50%) scaleX(3.5) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) scaleX(3.5) translateY(6px);
+  }
+}
+
+.exp-carousel .exp-carousel-arrow:hover,
+.exp-carousel .exp-carousel-arrow:focus-visible {
+  animation-play-state: paused;
+  transform: translateX(-50%) scaleX(3.5) translateY(4px);
+  outline: none;
+}
+
+.exp-carousel .exp-carousel-arrow:active {
+  animation-play-state: paused;
+  transform: translateX(-50%) scaleX(3.5) translateY(8px);
+}
+
+/* Fix for the mist container to properly position the arrow */
+.exp-carousel-mist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 43, 54, 0.103) 0%, rgba(0, 43, 54, 0) 70%, #002b3611 100%);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: opacity 320ms ease;
+}
+
+.exp-carousel-mist .exp-carousel-arrow {
+  pointer-events: auto;
 }
