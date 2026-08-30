@@ -233,9 +233,15 @@ export function usePortfolioScroll() {
     // Gestures starting inside a mobile modal belong to the modal.
     if (event.target.closest(".pf-modal")) return;
     dragRef.current = {
-      active: true, startX: event.clientX, startY: event.clientY,
+      active: true,
+      startX: event.clientX,
+      startY: event.clientY,
       startScroll: scrollRef.current?.scrollLeft ?? 0,
-      lastX: event.clientX, lastTime: performance.now(), velocity: 0, axis: null,
+      lastX: event.clientX,
+      lastY: event.clientY,  // <-- CHANGE 1: Added lastY for vertical tracking
+      lastTime: performance.now(),
+      velocity: 0,
+      axis: null,
     };
   }, []);
 
@@ -251,12 +257,19 @@ export function usePortfolioScroll() {
       drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
     }
     if (!drag.axis) return;
+    
     if (drag.axis === "y") {
-      // Vertical drag pans the world horizontally with the same sign
-      // mapping as the desktop wheel: dragging down advances forward.
+      // <-- CHANGE 2: Vertical drag scrolls horizontally (down = scroll right)
       el.scrollLeft = clamp(drag.startScroll + dy, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+      // Update velocity for fling detection
+      const now = performance.now();
+      drag.velocity = ((event.clientY - drag.lastY) / Math.max(1, now - drag.lastTime)) * 1000;
+      drag.lastY = event.clientY;
+      drag.lastTime = now;
       return;
     }
+    
+    // Horizontal drag: scroll horizontally (dragging left = scroll right)
     el.scrollLeft = clamp(drag.startScroll - dx, 0, Math.max(0, el.scrollWidth - el.clientWidth));
     const now = performance.now();
     drag.velocity = ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) * 1000;
@@ -269,17 +282,50 @@ export function usePortfolioScroll() {
     const el = scrollRef.current;
     if (!drag?.active) return;
     drag.active = false;
-    if (drag.axis !== "x" || !el) return;
-    // A committed horizontal swipe always travels exactly one page from
-    // where the gesture started; a tiny nudge just settles back.
-    const dxTotal = event ? event.clientX - drag.startX : 0;
+    if (!el) return;
+    
     const maxPage = Math.max(0, Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw)));
-    const startPage = clamp(Math.round(drag.startScroll / Math.max(1, vw)), 0, maxPage);
-    const flung = Math.abs(dxTotal) > 55 || Math.abs(drag.velocity) > 320;
-    const targetPage = flung
-      ? clamp(startPage + (dxTotal < 0 ? 1 : -1), 0, maxPage)
-      : clamp(Math.round(el.scrollLeft / Math.max(1, vw)), 0, maxPage);
-    goTo(targetPage);
+    
+    // <-- CHANGE 3: Handle vertical drag with page snapping
+    if (drag.axis === "y") {
+      // Calculate total vertical movement
+      const dyTotal = event ? event.clientY - drag.startY : 0;
+      const startPage = clamp(Math.round(drag.startScroll / Math.max(1, vw)), 0, maxPage);
+      
+      // Fling detection: fast vertical swipe or large distance
+      const flung = Math.abs(dyTotal) > 55 || Math.abs(drag.velocity) > 320;
+      let targetPage;
+      
+      if (flung) {
+        // Swipe down = advance (scroll right), swipe up = go back (scroll left)
+        targetPage = clamp(startPage + (dyTotal > 0 ? 1 : -1), 0, maxPage);
+      } else {
+        // Snap to nearest page based on current scroll position
+        targetPage = clamp(Math.round(el.scrollLeft / Math.max(1, vw)), 0, maxPage);
+      }
+      goTo(targetPage);
+      return;
+    }
+    
+    // Handle horizontal drag
+    if (drag.axis === "x") {
+      const dxTotal = event ? event.clientX - drag.startX : 0;
+      const startPage = clamp(Math.round(drag.startScroll / Math.max(1, vw)), 0, maxPage);
+      
+      // Fling detection: fast horizontal swipe or large distance
+      const flung = Math.abs(dxTotal) > 55 || Math.abs(drag.velocity) > 320;
+      let targetPage;
+      
+      if (flung) {
+        // SWIPE RIGHT (dxTotal > 0) = go to PREVIOUS page (scroll left)
+        // SWIPE LEFT (dxTotal < 0) = go to NEXT page (scroll right)
+        targetPage = clamp(startPage + (dxTotal > 0 ? -1 : 1), 0, maxPage);
+      } else {
+        // Snap to nearest page based on current scroll position
+        targetPage = clamp(Math.round(el.scrollLeft / Math.max(1, vw)), 0, maxPage);
+      }
+      goTo(targetPage);
+    }
   }, [goTo, vw]);
 
   return {

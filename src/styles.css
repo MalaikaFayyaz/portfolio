@@ -233,13 +233,10 @@ button, a {
 .pf-home-copy {
   max-width: 640px;
 }
-
 .pf-portrait-panel {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Reduce vertical spacing to move portrait up */
-  /* padding: 8px 0 0; */
 }
 
 .ascii-wrap {
