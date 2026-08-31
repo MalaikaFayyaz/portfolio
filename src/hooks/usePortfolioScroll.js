@@ -287,7 +287,7 @@ const onPointerMove = useCallback((event) => {
   const deltaY = event.clientY - drag.lastY;
 
   el.scrollLeft = clamp(
-    el.scrollLeft + deltaY,
+    el.scrollLeft - deltaY,
     0,
     Math.max(0, el.scrollWidth - el.clientWidth)
   );
