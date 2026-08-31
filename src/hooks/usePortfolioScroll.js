@@ -228,60 +228,109 @@ export function usePortfolioScroll() {
     return () => cancelAnimationFrame(driveRafRef.current);
   }, []);
 
-  const onPointerDown = useCallback((event) => {
-    if (event.target.closest("[data-no-drag]")) return;
-    // Gestures starting inside a mobile modal belong to the modal.
-    if (event.target.closest(".pf-modal")) return;
-    dragRef.current = {
-      active: true, startX: event.clientX, startY: event.clientY,
-      startScroll: scrollRef.current?.scrollLeft ?? 0,
-      lastX: event.clientX, lastTime: performance.now(), velocity: 0, axis: null,
-    };
-  }, []);
+ const onPointerDown = useCallback((event) => {
+  if (event.target.closest("[data-no-drag]")) return;
+  if (event.target.closest(".pf-modal")) return;
 
-  const onPointerMove = useCallback((event) => {
-    const drag = dragRef.current;
-    const el = scrollRef.current;
-    if (!drag?.active || !el) return;
-    const dx = event.clientX - drag.startX;
-    const dy = event.clientY - drag.startY;
-    // Lock onto whichever axis crosses the threshold first so one gesture
-    // only ever drives one direction.
-    if (!drag.axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-      drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
-    }
-    if (!drag.axis) return;
-    if (drag.axis === "y") {
-      // Vertical drag pans the world horizontally with the same sign
-      // mapping as the desktop wheel: dragging down advances forward.
-      el.scrollLeft = clamp(drag.startScroll + dy, 0, Math.max(0, el.scrollWidth - el.clientWidth));
-      return;
-    }
-    el.scrollLeft = clamp(drag.startScroll - dx, 0, Math.max(0, el.scrollWidth - el.clientWidth));
+  event.currentTarget.setPointerCapture?.(event.pointerId);
+
+  dragRef.current = {
+    active: true,
+    startX: event.clientX,
+    startY: event.clientY,
+    lastX: event.clientX,
+    lastY: event.clientY,
+    startScroll: scrollRef.current?.scrollLeft ?? 0,
+    lastTime: performance.now(),
+    velocity: 0,
+    axis: null,
+  };
+}, []);
+
+const onPointerMove = useCallback((event) => {
+  const drag = dragRef.current;
+  const el = scrollRef.current;
+
+  if (!drag?.active || !el) return;
+
+  const dx = event.clientX - drag.startX;
+  const dy = event.clientY - drag.startY;
+
+  // Lock onto the first dominant axis and never switch afterwards.
+  if (!drag.axis && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+    drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+  }
+
+  if (!drag.axis) return;
+
+  // Horizontal swipe
+  if (drag.axis === "x") {
+    el.scrollLeft = clamp(
+      drag.startScroll - dx,
+      0,
+      Math.max(0, el.scrollWidth - el.clientWidth)
+    );
+
     const now = performance.now();
-    drag.velocity = ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) * 1000;
+
+    drag.velocity =
+      ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) *
+      1000;
+
     drag.lastX = event.clientX;
     drag.lastTime = now;
-  }, []);
 
-  const onPointerUp = useCallback((event) => {
-    const drag = dragRef.current;
-    const el = scrollRef.current;
-    if (!drag?.active) return;
-    drag.active = false;
-    if (drag.axis !== "x" || !el) return;
-    // A committed horizontal swipe always travels exactly one page from
-    // where the gesture started; a tiny nudge just settles back.
-    const dxTotal = event ? event.clientX - drag.startX : 0;
-    const maxPage = Math.max(0, Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw)));
-    const startPage = clamp(Math.round(drag.startScroll / Math.max(1, vw)), 0, maxPage);
-    const flung = Math.abs(dxTotal) > 55 || Math.abs(drag.velocity) > 320;
-    const targetPage = flung
-      ? clamp(startPage + (dxTotal < 0 ? 1 : -1), 0, maxPage)
-      : clamp(Math.round(el.scrollLeft / Math.max(1, vw)), 0, maxPage);
-    goTo(targetPage);
-  }, [goTo, vw]);
+    return;
+  }
 
+  // Vertical gesture behaves like the desktop wheel.
+  const deltaY = event.clientY - drag.lastY;
+
+  el.scrollLeft = clamp(
+    el.scrollLeft + deltaY,
+    0,
+    Math.max(0, el.scrollWidth - el.clientWidth)
+  );
+
+  drag.lastY = event.clientY;
+}, []);
+
+const onPointerUp = useCallback((event) => {
+  const drag = dragRef.current;
+  const el = scrollRef.current;
+
+  if (!drag?.active) return;
+
+  event?.currentTarget?.releasePointerCapture?.(event.pointerId);
+
+  drag.active = false;
+
+  if (drag.axis !== "x" || !el) return;
+
+  const dxTotal = event ? event.clientX - drag.startX : 0;
+
+  const maxPage = Math.max(
+    0,
+    Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw))
+  );
+
+  const startPage = clamp(
+    Math.round(drag.startScroll / Math.max(1, vw)),
+    0,
+    maxPage
+  );
+
+  let targetPage = startPage;
+
+  // Distance-first logic. Much more reliable on real touchscreens.
+  if (dxTotal <= -40) {
+    targetPage = clamp(startPage + 1, 0, maxPage);
+  } else if (dxTotal >= 40) {
+    targetPage = clamp(startPage - 1, 0, maxPage);
+  }
+
+  goTo(targetPage);
+}, [goTo, vw]);
   return {
     scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, isGameMode, facingDirection,
     bindDrag: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp },
