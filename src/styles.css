@@ -187,6 +187,7 @@ button, a {
   overflow-y: hidden;
   scrollbar-width: none;
   touch-action: none;
+  overscroll-behavior: none;
 }
 
 .pf-scroll::-webkit-scrollbar {

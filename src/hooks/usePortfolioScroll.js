@@ -35,6 +35,15 @@ export function usePortfolioScroll() {
     () => typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
     []
   );
+  const isIOS = useMemo(() => {
+    if (typeof navigator === "undefined") return false;
+
+    return (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" &&
+        navigator.maxTouchPoints > 1)
+    );
+  }, []);
 
   useEffect(() => {
     const measure = () => {
@@ -228,111 +237,209 @@ export function usePortfolioScroll() {
     return () => cancelAnimationFrame(driveRafRef.current);
   }, []);
 
- const onPointerDown = useCallback((event) => {
-  if (event.target.closest("[data-no-drag]")) return;
-  if (event.target.closest(".pf-modal")) return;
+  const beginDrag = useCallback((clientX, clientY) => {
+    dragRef.current = {
+      active: true,
+      startX: clientX,
+      startY: clientY,
+      lastX: clientX,
+      lastY: clientY,
+      startScroll: scrollRef.current?.scrollLeft ?? 0,
+      lastTime: performance.now(),
+      velocity: 0,
+      axis: null,
+    };
+  }, []);
 
-  event.currentTarget.setPointerCapture?.(event.pointerId);
+  const updateDrag = useCallback((clientX, clientY) => {
+    const drag = dragRef.current;
+    const el = scrollRef.current;
 
-  dragRef.current = {
-    active: true,
-    startX: event.clientX,
-    startY: event.clientY,
-    lastX: event.clientX,
-    lastY: event.clientY,
-    startScroll: scrollRef.current?.scrollLeft ?? 0,
-    lastTime: performance.now(),
-    velocity: 0,
-    axis: null,
-  };
-}, []);
+    if (!drag?.active || !el) return;
 
-const onPointerMove = useCallback((event) => {
-  const drag = dragRef.current;
-  const el = scrollRef.current;
+    const dx = clientX - drag.startX;
+    const dy = clientY - drag.startY;
 
-  if (!drag?.active || !el) return;
+    if (!drag.axis && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+    }
 
-  const dx = event.clientX - drag.startX;
-  const dy = event.clientY - drag.startY;
+    if (!drag.axis) return;
 
-  // Lock onto the first dominant axis and never switch afterwards.
-  if (!drag.axis && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
-    drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
-  }
+    if (drag.axis === "x") {
+      el.scrollLeft = clamp(
+        drag.startScroll - dx,
+        0,
+        Math.max(0, el.scrollWidth - el.clientWidth)
+      );
 
-  if (!drag.axis) return;
+      const now = performance.now();
 
-  // Horizontal swipe
-  if (drag.axis === "x") {
+      drag.velocity =
+        ((drag.lastX - clientX) / Math.max(1, now - drag.lastTime)) * 1000;
+
+      drag.lastX = clientX;
+      drag.lastTime = now;
+
+      return;
+    }
+
+    const deltaY = clientY - drag.lastY;
+
     el.scrollLeft = clamp(
-      drag.startScroll - dx,
+      el.scrollLeft - deltaY,
       0,
       Math.max(0, el.scrollWidth - el.clientWidth)
     );
 
-    const now = performance.now();
+    drag.lastY = clientY;
+  }, []);
 
-    drag.velocity =
-      ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) *
-      1000;
+  const endDrag = useCallback((clientX) => {
+    const drag = dragRef.current;
+    const el = scrollRef.current;
 
-    drag.lastX = event.clientX;
-    drag.lastTime = now;
+    if (!drag?.active || !el) return;
 
-    return;
-  }
+    drag.active = false;
 
-  // Vertical gesture behaves like the desktop wheel.
-  const deltaY = event.clientY - drag.lastY;
+    if (drag.axis !== "x") return;
 
-  el.scrollLeft = clamp(
-    el.scrollLeft - deltaY,
-    0,
-    Math.max(0, el.scrollWidth - el.clientWidth)
-  );
+    const dxTotal = clientX - drag.startX;
 
-  drag.lastY = event.clientY;
-}, []);
+    const maxPage = Math.max(
+      0,
+      Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw))
+    );
 
-const onPointerUp = useCallback((event) => {
-  const drag = dragRef.current;
-  const el = scrollRef.current;
+    const startPage = clamp(
+      Math.round(drag.startScroll / Math.max(1, vw)),
+      0,
+      maxPage
+    );
 
-  if (!drag?.active) return;
+    let targetPage = startPage;
 
-  event?.currentTarget?.releasePointerCapture?.(event.pointerId);
+    if (dxTotal <= -40) {
+      targetPage = clamp(startPage + 1, 0, maxPage);
+    } else if (dxTotal >= 40) {
+      targetPage = clamp(startPage - 1, 0, maxPage);
+    }
 
-  drag.active = false;
+    goTo(targetPage);
+  }, [goTo, vw]);
 
-  if (drag.axis !== "x" || !el) return;
+  const onPointerDown = useCallback((event) => {
+    if (event.target.closest("[data-no-drag]")) return;
+    if (event.target.closest(".pf-modal")) return;
 
-  const dxTotal = event ? event.clientX - drag.startX : 0;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
 
-  const maxPage = Math.max(
-    0,
-    Math.round((el.scrollWidth - el.clientWidth) / Math.max(1, vw))
-  );
+    beginDrag(event.clientX, event.clientY);
+  }, [beginDrag]);
 
-  const startPage = clamp(
-    Math.round(drag.startScroll / Math.max(1, vw)),
-    0,
-    maxPage
-  );
+  const onTouchStart = useCallback((event) => {
+    if (!isIOS) return;
 
-  let targetPage = startPage;
+    if (event.target.closest("[data-no-drag]")) return;
+    if (event.target.closest(".pf-modal")) return;
 
-  // Distance-first logic. Much more reliable on real touchscreens.
-  if (dxTotal <= -40) {
-    targetPage = clamp(startPage + 1, 0, maxPage);
-  } else if (dxTotal >= 40) {
-    targetPage = clamp(startPage - 1, 0, maxPage);
-  }
+    const touch = event.touches[0];
+    if (!touch) return;
 
-  goTo(targetPage);
-}, [goTo, vw]);
+    beginDrag(touch.clientX, touch.clientY);
+  }, [isIOS, beginDrag]);
+
+  const onTouchMove = useCallback((event) => {
+    if (!isIOS) return;
+
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    event.preventDefault();
+
+    updateDrag(touch.clientX, touch.clientY);
+  }, [isIOS, updateDrag]);
+
+  const onTouchEnd = useCallback((event) => {
+    if (!isIOS) return;
+
+    const touch = event.changedTouches[0];
+
+    endDrag(
+      touch?.clientX ??
+      dragRef.current?.lastX ??
+      dragRef.current?.startX ??
+      0
+    );
+  }, [isIOS, endDrag]);
+
+  const onPointerMove = useCallback((event) => {
+    const drag = dragRef.current;
+    const el = scrollRef.current;
+
+    if (!drag?.active || !el) return;
+
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+
+    // Lock onto the first dominant axis and never switch afterwards.
+    if (!drag.axis && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+    }
+
+    if (!drag.axis) return;
+
+    // Horizontal swipe
+    if (drag.axis === "x") {
+      el.scrollLeft = clamp(
+        drag.startScroll - dx,
+        0,
+        Math.max(0, el.scrollWidth - el.clientWidth)
+      );
+
+      const now = performance.now();
+
+      drag.velocity =
+        ((drag.lastX - event.clientX) / Math.max(1, now - drag.lastTime)) *
+        1000;
+
+      drag.lastX = event.clientX;
+      drag.lastTime = now;
+
+      return;
+    }
+
+    // Vertical gesture behaves like the desktop wheel.
+    const deltaY = event.clientY - drag.lastY;
+
+    el.scrollLeft = clamp(
+      el.scrollLeft - deltaY,
+      0,
+      Math.max(0, el.scrollWidth - el.clientWidth)
+    );
+
+    drag.lastY = event.clientY;
+  }, []);
+
+  const onPointerUp = useCallback((event) => {
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+
+    endDrag(event.clientX);
+  }, [endDrag]);
+
   return {
     scrollRef, vw, vh, scrollX, carWorldX, activePage, onScroll, goTo, nudgePage, isTouch, isGameMode, facingDirection,
-    bindDrag: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp },
+    bindDrag: {
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel: onPointerUp,
+
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    onTouchCancel: onTouchEnd,
+    },
   };
 }
