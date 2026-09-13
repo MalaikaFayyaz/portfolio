@@ -148,7 +148,7 @@ export const DOMAINS = [
         "Developed Canvas particle portrait with pointer-repulsion forces and devicePixelRatio-aware sizing.",
         "Sustained smooth 60fps animation with rAF loops — zero shipped audio or image assets."
       ],
-      "link": "#"
+      "link": "https://github.com/MalaikaFayyaz/portfolio"
     },
     {
       "id": "sw-2",
@@ -161,7 +161,6 @@ export const DOMAINS = [
         "Designed automated database workflows following modular architecture for maintainability.",
         "Collaborated using Git feature branches and documented decisions through architecture documentation."
       ],
-      "link": "#"
     },
     {
       "id": "sw-3",
@@ -173,7 +172,7 @@ export const DOMAINS = [
         "Designed and implemented modular architecture with authentication and bookmarking features.",
         "Built backend APIs and file-management workflows for audiobook storage and streaming."
       ],
-      "link": "#"
+      "link": "https://github.com/MalaikaFayyaz/Auris"
     },
     {
       "id": "sw-4",
@@ -185,7 +184,7 @@ export const DOMAINS = [
         "Built authentication, CRUD operations, content filtering, and a responsive UI end to end.",
         "Designed REST APIs and integrated MongoDB for efficient data management."
       ],
-      "link": "#"
+      "link": "https://github.com/MalaikaFayyaz/DIY-Website"
     }
   ]
 },
@@ -205,7 +204,7 @@ export const DOMAINS = [
           "Implemented mmap/munmap system calls with demand paging and lazy allocation, loading pages only on access to reduce memory overhead.",
           "Debugged kernel-level components including page fault handling, interrupt management, and user-kernel context switching."
         ],
-        "link": "#"
+        
       },
       {
         "id": "sys-2",
@@ -218,7 +217,7 @@ export const DOMAINS = [
           "Integrated Azure Virtual Machines for distributed key generation and prime number computation.",
           "Applied socket programming for inter-process communication and scalability testing."
         ],
-        "link": "#"
+        
       }
     ]
   },
@@ -240,7 +239,7 @@ export const DOMAINS = [
           "Built control logic, register file, ALU, and memory subsystems from basic gates.",
           "Verified exact behavior matching textbook specifications through comprehensive testing."
         ],
-        "link": "#"
+        
       }
     ]
   },
@@ -261,7 +260,7 @@ export const DOMAINS = [
           "Evaluated multiple models including Random Forest, XGBoost, LightGBM, CatBoost, and PyTorch neural networks.",
           "Improved macro F1-score from 0.54 to 0.73 through feature engineering, class balancing, and threshold optimization."
         ],
-        "link": "#"
+       
       },
       {
         "id": "ai-2",
@@ -274,7 +273,7 @@ export const DOMAINS = [
           "Worked with CNN, Transformer, and ResNet-Transformer architectures on IAMParagraphs datasets.",
           "Debugged infrastructure issues including Lambda integrations, API failures, and server-side inference errors."
         ],
-        "link": "#"
+       
       },
       {
         "id": "ai-3",
@@ -286,7 +285,7 @@ export const DOMAINS = [
           "Designed CNN architecture for image classification.",
           "Applied preprocessing, training, and evaluation techniques for recognition accuracy."
         ],
-        "link": "#"
+        
       }
     ]
   },
@@ -308,7 +307,7 @@ export const DOMAINS = [
           "Evaluated models on Synthetic, MSR Cambridge, and FIU traces achieving performance beyond LRU across multiple workloads.",
           "Narrowed performance gap with OPT through iterative model refinement and feature engineering."
         ],
-        "link": "#"
+        
       }
     ]
   }
