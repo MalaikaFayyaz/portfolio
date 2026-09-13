@@ -2,11 +2,10 @@
 Portfolio V1 is live <a href="https://portfolio-eta-eight-4e7wlc2x4d.vercel.app" target="_blank">here.</a> It is built with React 18 and Vite leveraging Canvas API, Web Audio API, SVG, CSS3.
 </p>
 <p align="center">
-  <img src="src/assets/readme/home.png" width="100%" alt="portfolioV1-home"/>
-  <img src="src/assets/readme/about.png" width="100%" alt="portfolioV1-about"/>
-  <img src="src/assets/readme/experience.png" width="100%" alt="portfolioV1-experience"/>
-  <img src="src/assets/readme/projects.png" width="100%" alt="portfolioV1-projects"/>
-
+  <img src="src/assets/readme/home.png" width="24%" alt="portfolioV1-home"/>
+  <img src="src/assets/readme/about.png" width="24%" alt="portfolioV1-about"/>
+  <img src="src/assets/readme/experience.png" width="24%" alt="portfolioV1-experience"/>
+  <img src="src/assets/readme/projects.png" width="24%" alt="portfolioV1-projects"/>
 </p>
 
 ## Set-Up
