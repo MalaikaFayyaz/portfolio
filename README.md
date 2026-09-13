@@ -9,7 +9,7 @@ Portfolio V1 is live <a href="https://portfolio-eta-eight-4e7wlc2x4d.vercel.app"
 
 </p>
 
-## 🛠 set-up
+## Set-Up
 
 1. Install the dependencies
 
