@@ -13,7 +13,7 @@ export function HoloPanel({
   }, [playSound]);
 
   return (
-    <div className={cn("holo-panel", className)}>
+    <div className={cn("holo-panel", className)} data-no-drag>
       {onClose && (
         <button type="button" className="holo-panel-close" onClick={onClose} aria-label="Close details" title="Close details">
           ×

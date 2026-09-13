@@ -202,7 +202,7 @@ function ProjectsSection({ domain, setDomain, isTouch = false }) {
           <div className="projects-domain-area">
             <div className="eyebrow">Projects</div>
             <h1 className="pf-title">pick a <span className="accent">domain</span>.</h1>
-            <div className="domain-grid">
+            <div className="domain-grid" data-no-drag>
               {DOMAINS.map((d) => (
                 <button
                   key={d.id}
